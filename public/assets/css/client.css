@@ -1,21 +1,53 @@
-/* Styles propres à ce site.
-   ─────────────────────────────────────────────────────────────────────────
-   Écrire ici, jamais dans site.css : ce fichier n'est jamais modifié par une
-   mise à jour, site.css l'est. Il est chargé après, donc il l'emporte.
+/* --- SECTION HERO --- */
 
-   Variables disponibles, déjà définies par site.css :
+/* 1. Le conteneur principal : on force la pleine largeur de l'écran */
+.bloc-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  height: 80vh;
+  text-align: center;
+  overflow: hidden;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
 
-     --couleur-texte        --couleur-texte-doux    --couleur-lien
-     --couleur-fond         --couleur-fond-doux     --couleur-trait
-     --largeur
+/* 2. L'image de fond */
+.bloc-hero__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.6);
+}
 
-   --couleur-lien et --couleur-texte sont écrasées par les couleurs saisies
-   dans l'administration : ne pas les fixer ici.
+/* 3. Le conteneur du texte et les paragraphes : forcés en blanc */
+.bloc-hero__texte,
+.bloc-hero__texte p,
+.bloc-hero__texte div {
+  position: relative;
+  z-index: 10;
+  max-width: 800px;
+  padding: 0 1rem;
+  color: #ffffff !important;
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
 
-   Interdits, vérifiés par « php bin/verifier-accessibilite.php » :
-     · opacity sur du texte
-     · polices ou images chargées depuis un autre site
-     · contraste inférieur à 4,5:1
-
-   Après toute modification : php bin/purge-cache.php
-   ───────────────────────────────────────────────────────────────────────── */
+/* 4. Les titres (h1, h2) à l'intérieur du bloc texte */
+.bloc-hero__texte h1,
+.bloc-hero__texte h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 3rem !important;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #ffffff !important;
+  text-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+}

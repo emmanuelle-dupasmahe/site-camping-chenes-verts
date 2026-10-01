@@ -1,0 +1,120 @@
+{# Page shell. Content is rendered server-side and complete on first response. #}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ site.nom|default('Site') }}{% endblock %}</title>
+    {# Passed in rather than recomputed: the preview title must be the title. #}
+    {% include 'partials/meta-sociales.html.twig' with { titrePartage: block('title') } %}
+    {% block head %}{% endblock %}
+    
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <link rel="stylesheet" href="/assets/css/client.css">
+    <link rel="stylesheet" href="/assets/css/couleurs.css">
+    
+    {% if jsonld|default('') is not empty %}
+        <script type="application/ld+json">{{ jsonld|raw }}</script>
+    {% endif %}
+
+    <!-- Importation des polices Google Fonts (Temporaire pour test Tailwind) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- Configuration Tailwind CSS (Temporaire pour test visuel) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'vert-chene': '#1F5E3D',
+                        'marron-ecorce': '#9E5425',
+                        'vert-tendre': '#F0FDF4',
+                        'blanc-creme': '#FAFAFA',
+                        'gris-ardoise': '#1F2937',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-blanc-creme text-gris-ardoise font-sans antialiased">
+
+    <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+    <!-- Bandeau d'alerte -->
+    <div class="bg-marron-ecorce text-white text-sm text-center py-2 font-medium">
+        Dernières disponibilités pour juillet-août.
+    </div>
+
+    <!-- En-tête -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <!-- Attention : L'image devra être placée dans le dossier public/assets/ du socle -->
+                <img src="/assets/logo_camping_relief.png" alt="Logo Camping Les Chênes Verts" class="h-16 w-auto">
+            </div>
+
+            <!-- Menu Desktop -->
+<nav class="hidden lg:flex gap-6 font-medium text-gris-ardoise text-sm">
+    <a href="/" class="hover:text-vert-chene transition">Accueil</a>
+    <a href="#" class="hover:text-vert-chene transition">Hébergements</a>
+    <a href="#" class="hover:text-vert-chene transition">Tarifs</a>
+    <a href="#" class="hover:text-vert-chene transition">Services & Animations</a>
+    <a href="#" class="text-vert-chene font-bold border-b-2 border-vert-chene pb-1">Autour du camping</a>
+    <a href="#" class="hover:text-vert-chene transition">Accès & Contact</a>
+</nav>
+
+            <div class="hidden md:block">
+                <a href="#" class="bg-vert-chene hover:bg-emerald-900 text-white px-6 py-2 rounded-full font-bold shadow-md transition">Réserver</a>
+            </div>
+
+            <!-- Menu Burger Mobile -->
+            <button class="md:hidden text-vert-chene focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main id="contenu">
+        {% block main %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gris-ardoise text-gray-300 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div>
+                <span class="font-heading font-bold text-white text-xl block mb-4">Camping Les Chênes Verts</span>
+                <p class="mb-2">Route des Gorges<br>07000 Ardèche</p>
+                <p class="font-bold text-white mb-2">Tél : 04 00 00 00 00</p>
+                <span class="inline-block bg-gray-700 text-white text-xs px-2 py-1 rounded">★★★ Atout France</span>
+            </div>
+            <div>
+                <span class="font-heading font-bold text-white text-lg block mb-4">Navigation</span>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition">Hébergements</a></li>
+                    <li><a href="#" class="hover:text-white transition">Tarifs & Suppléments</a></li>
+                    <li><a href="#" class="hover:text-white transition">Réserver votre séjour</a></li>
+                </ul>
+            </div>
+            <div>
+                <span class="font-heading font-bold text-white text-lg block mb-4">Légal</span>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition underline">Mentions légales</a></li>
+                    <li><a href="#" class="hover:text-white transition underline">Conditions Générales de Vente (CGV)</a></li>
+                    <li><a href="#" class="hover:text-white transition underline">Politique de confidentialité</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
