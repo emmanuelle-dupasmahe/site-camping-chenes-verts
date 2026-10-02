@@ -60,7 +60,11 @@ function annotate(input) {
     let notice = input.parentNode.querySelector('.contraste');
 
     if (!isColour(input.value)) {
-        if (notice) notice.remove();
+
+        if (notice) {
+            notice.remove();
+        }
+
         return;
     }
 
@@ -73,8 +77,17 @@ function annotate(input) {
     }
 
     const { className, text } = verdict(input.value.trim());
-    notice.className = `contraste ${className}`;
-    notice.textContent = text;
+
+    const nextClassName = `contraste ${className}`;
+
+    if (notice.className !== nextClassName) {
+        notice.className = nextClassName;
+    }
+
+    if (notice.textContent !== text) {
+        notice.textContent = text;
+    }
+
 }
 
 function scan() {
