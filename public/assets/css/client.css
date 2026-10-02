@@ -1,4 +1,3 @@
-
 /* --- SECTION HERO --- */
 
 /* 1. Le conteneur principal : on force la pleine largeur de l'écran */
@@ -53,3 +52,83 @@
   text-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
 }
 
+/* --- SECTION TEXTE-IMAGE --- */
+
+/* 1. Conteneur principal de la section */
+.bloc-texte-image {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+  align-items: center;
+}
+
+/* Sur les écrans moyens et larges (tablettes / PC) */
+@media (min-width: 48rem) {
+  .bloc-texte-image {
+    /* L'ordre par défaut du HTML est Texte puis Image. 'row' met donc l'image à droite */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Si l'image est positionnée à GAUCHE via le CMS, c'est là qu'on doit inverser */
+  .bloc-texte-image--gauche {
+    flex-direction: row-reverse;
+  }
+}
+
+/* 2. Le bloc de texte */
+.bloc-texte-image__texte {
+  flex: 1;
+  max-width: 600px;
+}
+
+/* Le titre de la section */
+.bloc-texte-image__texte h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--couleur-texte);
+  margin-bottom: 1.25rem;
+  line-height: 1.2;
+}
+
+/* Les paragraphes du texte */
+.bloc-texte-image__texte p {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  color: var(--couleur-texte);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* 3. L'image de la section */
+.bloc-texte-image__image {
+  flex: 1;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+}
+
+/* Le lien "Découvrir le domaine" dans le texte */
+.bloc-texte-image__texte a {
+  color: #c46a28;
+  /* Couleur orange/marron inspirée de votre maquette */
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 0.5rem;
+  transition: opacity 0.3s ease;
+}
+
+/* Effet au survol de la souris */
+.bloc-texte-image__texte a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}

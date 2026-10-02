@@ -17,12 +17,12 @@
         <script type="application/ld+json">{{ jsonld|raw }}</script>
     {% endif %}
 
-    <!-- Importation des polices Google Fonts (Temporaire pour test Tailwind) -->
+    <!-- Importation des polices Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 
-    <!-- Configuration Tailwind CSS (Temporaire pour test visuel) -->
+    <!-- Configuration Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -56,27 +56,46 @@
     <!-- En-tête -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            
+            <!-- Logo -->
             <div class="flex items-center gap-3">
-                <!-- Attention : L'image devra être placée dans le dossier public/assets/ du socle -->
-                <img src="/assets/logo_camping_relief.png" alt="Logo Camping Les Chênes Verts" class="h-16 w-auto">
+                <a href="/">
+                    <img src="/assets/logo_camping_relief.png" alt="Logo {{ site.nom|default('Camping Les Chênes Verts') }}" class="h-16 w-auto">
+                </a>
             </div>
 
-            <!-- Menu Desktop -->
-<nav class="hidden lg:flex gap-6 font-medium text-gris-ardoise text-sm">
-    <a href="/" class="hover:text-vert-chene transition">Accueil</a>
-    <a href="#" class="hover:text-vert-chene transition">Hébergements</a>
-    <a href="#" class="hover:text-vert-chene transition">Tarifs</a>
-    <a href="#" class="hover:text-vert-chene transition">Services & Animations</a>
-    <a href="#" class="text-vert-chene font-bold border-b-2 border-vert-chene pb-1">Autour du camping</a>
-    <a href="#" class="hover:text-vert-chene transition">Accès & Contact</a>
-</nav>
+            <!-- Menu Desktop Dynamique (Géré par le CMS) -->
+            {% if menu|default([]) is not empty or afficherActualites|default(false) %}
+                <nav class="hidden lg:flex" aria-label="Menu principal">
+                    <ul class="flex gap-6 font-medium text-gris-ardoise text-sm items-center">
+                        {% for entree in menu %}
+                            {% set adresse = entree.slug == accueilSlug|default('accueil') ? '/' : '/' ~ entree.slug %}
+                            {% set estActif = (entree.slug == slug|default(null)) %}
+                            
+                            <!-- Les classes de style sont maintenant sur le <li> -->
+                            <li class="{{ estActif ? 'text-vert-chene font-bold border-b-2 border-vert-chene pb-1' : 'hover:text-vert-chene transition' }}">
+                                <!-- Le lien <a> retrouve sa syntaxe d'origine stricte -->
+                                <a href="{{ adresse }}"{% if estActif %} aria-current="page"{% endif %}>{{ entree.libelle }}</a>
+                            </li>
+                        {% endfor %}
 
+                        {% if afficherActualites|default(false) %}
+                            {% set estActifActu = (slug|default(null) == 'actualites') %}
+                            <li class="{{ estActifActu ? 'text-vert-chene font-bold border-b-2 border-vert-chene pb-1' : 'hover:text-vert-chene transition' }}">
+                                <a href="/actualites"{% if estActifActu %} aria-current="page"{% endif %}>Actualités</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+
+            <!-- Bouton Réserver -->
             <div class="hidden md:block">
                 <a href="#" class="bg-vert-chene hover:bg-emerald-900 text-white px-6 py-2 rounded-full font-bold shadow-md transition">Réserver</a>
             </div>
 
             <!-- Menu Burger Mobile -->
-            <button class="md:hidden text-vert-chene focus:outline-none">
+            <button class="md:hidden text-vert-chene focus:outline-none" aria-label="Ouvrir le menu">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
@@ -91,26 +110,36 @@
     <!-- Footer -->
     <footer class="bg-gris-ardoise text-gray-300 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            
+            <!-- Colonne 1 : Informations du camping -->
             <div>
-                <span class="font-heading font-bold text-white text-xl block mb-4">Camping Les Chênes Verts</span>
+                <span class="font-heading font-bold text-white text-xl block mb-4">{{ site.nom|default('Camping Les Chênes Verts') }}</span>
                 <p class="mb-2">Route des Gorges<br>07000 Ardèche</p>
                 <p class="font-bold text-white mb-2">Tél : 04 00 00 00 00</p>
                 <span class="inline-block bg-gray-700 text-white text-xs px-2 py-1 rounded">★★★ Atout France</span>
             </div>
+            
+            <!-- Colonne 2 : Navigation dynamique (Gérée par le CMS) -->
             <div>
                 <span class="font-heading font-bold text-white text-lg block mb-4">Navigation</span>
                 <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-white transition">Hébergements</a></li>
-                    <li><a href="#" class="hover:text-white transition">Tarifs & Suppléments</a></li>
-                    <li><a href="#" class="hover:text-white transition">Réserver votre séjour</a></li>
+                    {% if menu|default([]) is not empty %}
+                        {% for entree in menu %}
+                            {% set adresse = entree.slug == accueilSlug|default('accueil') ? '/' : '/' ~ entree.slug %}
+                            <li><a href="{{ adresse }}" class="hover:text-white transition">{{ entree.libelle }}</a></li>
+                        {% endfor %}
+                    {% endif %}
                 </ul>
             </div>
+            
+            <!-- Colonne 3 : Légal -->
             <div>
                 <span class="font-heading font-bold text-white text-lg block mb-4">Légal</span>
                 <ul class="space-y-2">
-                    <li><a href="#" class="hover:text-white transition underline">Mentions légales</a></li>
-                    <li><a href="#" class="hover:text-white transition underline">Conditions Générales de Vente (CGV)</a></li>
-                    <li><a href="#" class="hover:text-white transition underline">Politique de confidentialité</a></li>
+                    {# Liens fixes : il faudra créer ces pages avec ces adresses dans le CMS #}
+                    <li><a href="/mentions-legales" class="hover:text-white transition underline">Mentions légales</a></li>
+                    <li><a href="/cgv" class="hover:text-white transition underline">Conditions Générales de Vente (CGV)</a></li>
+                    <li><a href="/politique-de-confidentialite" class="hover:text-white transition underline">Politique de confidentialité</a></li>
                 </ul>
             </div>
         </div>

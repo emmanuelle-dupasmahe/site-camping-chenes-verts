@@ -25,6 +25,7 @@ $isTexteImage = "data.type === 'texte-image'";
 $isContact = "data.type === 'contact'";
 $isFormulaire = "data.type === 'formulaire'";
 $isTemoignages = "data.type === 'temoignages'";
+$isHebergements = "data.type === 'hebergements'";
 $hasImage = "['hero', 'texte-image'].includes(data.type)";
 $hasTexte = "['texte-image', 'contact', 'formulaire'].includes(data.type)";
 
@@ -92,6 +93,7 @@ return [
                                 ['value' => 'hero', 'label' => 'Bandeau d’ouverture'],
                                 ['value' => 'texte-image', 'label' => 'Texte et image'],
                                 ['value' => 'contact', 'label' => 'Coordonnées'],
+                                ['value' => 'hebergements', 'label' => 'Hébergements (3 cartes)'],
                                 ['value' => 'formulaire', 'label' => 'Formulaire de contact'],
                                 ['value' => 'temoignages', 'label' => 'Témoignages'],
                             ],
@@ -173,16 +175,13 @@ return [
                         'opts' => ['placeholder' => '/services'],
                     ],
                     // ── Témoignages ─────────────────────────────────────
-                    // Exemple commenté d'un type de section : voir le partial
-                    // templates/blocs/temoignages.html.twig et
-                    // docs/guide-integration.md.
                     [
                         'name' => 'introduction',
                         'type' => 'text',
                         'label' => 'Phrase d’introduction',
-                        'info' => 'Apparaît sous le titre, avant les témoignages.',
+                        'info' => 'Apparaît sous le titre.',
                         'width' => '1-1',
-                        'condition' => $isTemoignages,
+                        'condition' => "$isTemoignages ||$isHebergements",
                         'opts' => ['multiline' => true, 'maxlength' => 200],
                     ],
                     [
@@ -238,6 +237,43 @@ return [
                             ],
                         ],
                     ],
+
+                    // --- DEBUT CHAMPS BLOC HEBERGEMENTS ---
+                    [
+                        'name' => 'cartes',
+                        'type' => 'set',
+                        'label' => 'Cartes hébergement',
+                        'info' => 'Ajoutez vos cartes (Image, titre, puces).',
+                        'multiple' => true,
+                        'width' => '1-1',
+                        'condition' => $isHebergements,
+                        'opts' => [
+                            'display' => '${data.titre || \'Nouvelle carte\'}',
+                            'fields' => [
+                                ['name' => 'image', 'type' => 'asset', 'label' => 'Image de l\'hébergement'],
+                                ['name' => 'titre', 'type' => 'text', 'label' => 'Titre (ex: Mobil-home 4 pers.)'],
+                                ['name' => 'caracteristiques', 'type' => 'wysiwyg', 'label' => 'Caractéristiques (utilisez les puces)', 'opts' => ['toolbar' => 'listBullet']],
+                                ['name' => 'lien_texte', 'type' => 'text', 'label' => 'Texte du bouton', 'width' => '1-2'],
+                                ['name' => 'lien_url', 'type' => 'text', 'label' => 'Lien du bouton', 'width' => '1-2'],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'bouton_texte',
+                        'type' => 'text',
+                        'label' => 'Texte du bouton global',
+                        'info' => 'Bouton situé tout en bas de la section.',
+                        'width' => '1-2',
+                        'condition' => $isHebergements,
+                    ],
+                    [
+                        'name' => 'bouton_url',
+                        'type' => 'text',
+                        'label' => 'Lien du bouton global',
+                        'width' => '1-2',
+                        'condition' => $isHebergements,
+                    ],
+                    // --- FIN CHAMPS BLOC HEBERGEMENTS ---
 
                     [
                         'name' => 'afficherHoraires',
