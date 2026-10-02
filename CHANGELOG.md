@@ -12,6 +12,22 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.0.9 — 2026-10-02
+
+Une passerelle facilite désormais la navigation entre le site public et l’administration pour la personne connectée, sans exposer l’adresse de l’administration aux visiteurs.
+
+**Le site indique discrètement qu’une session d’administration est active.** Une pastille affichant l’avatar de la personne connectée et un point vert « en ligne » apparaît en bas à gauche du site. Un clic ouvre le tableau de bord de l’administration dans un nouvel onglet. La pastille n’est jamais affichée aux visiteurs et son interface s’adapte aux écrans mobiles.
+
+**L’administration permet de revenir rapidement sur le site.** Les actions « Voir le site » et « Voir cette page » permettent de passer de Cockpit au site public sans avoir à rechercher manuellement la page correspondante.
+
+**L’adresse de l’administration n’est pas inscrite dans les fichiers publics.** La passerelle repose sur un cookie de session déposé uniquement dans le navigateur authentifié et supprimé à la déconnexion. Lorsque le site et l’administration partagent la même origine, le site vérifie la session via `/check-session` avant d’afficher la passerelle.
+
+**Le cache des pages publiques reste utilisable.** La pastille n’est pas intégrée au HTML mis en cache : elle est ajoutée dans le navigateur après vérification de la session. Une même page en cache peut ainsi être servie aux visiteurs comme aux utilisateurs connectés sans exposer d’information liée à l’administration.
+
+Quatre tests dans `GardeFous/PasserelleTest` couvrent le fonctionnement et les garde-fous associés à cette passerelle.
+
+Rien à faire sur un site existant au-delà de la fusion et des commandes habituelles d’après-fusion décrites dans `docs/mise-a-jour-socle.md`.
+
 ## 2.0.8 — 2026-10-02
 
 L'administration Cockpit est désormais francisée et n'affiche plus aux comptes non administrateurs les actions qu'ils ne peuvent pas utiliser.
