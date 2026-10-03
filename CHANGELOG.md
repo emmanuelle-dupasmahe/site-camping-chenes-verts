@@ -12,6 +12,24 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.0.10 — 2026-10-03
+
+Le fichier `VERSION` était resté à 2.0.6 alors que les versions 2.0.7, 2.0.8 et 2.0.9 ont été
+publiées. Un site qui fusionnait la dernière version affichait donc un numéro faux, et la
+première étape de la mise à jour, la lecture de `VERSION`, ne disait pas la vérité.
+
+**`VERSION` porte de nouveau le numéro publié.** Un test le vérifie désormais à chaque
+exécution de la suite : `tests/GardeFous/VersionTest.php` compare `VERSION` à la première
+entrée de ce journal et refuse un numéro qui ne suit pas la forme `X.Y.Z`.
+
+**Les étiquettes se listent dans l'ordre des versions.** `docs/mise-a-jour-socle.md` indique
+`git tag -l 'v*' --sort=v:refname`. Le tri alphabétique par défaut plaçait `v2.0.10` entre
+`v2.0.1` et `v2.0.2`.
+
+**L'étiquette `v2.0.6`, jamais posée, l'a été sur l'état qui portait ce numéro.**
+
+Rien à faire sur un site existant au-delà de la fusion.
+
 ## 2.0.9 — 2026-10-02
 
 Une passerelle facilite désormais la navigation entre le site public et l’administration pour la personne connectée, sans exposer l’adresse de l’administration aux visiteurs.
@@ -27,6 +45,8 @@ Une passerelle facilite désormais la navigation entre le site public et l’adm
 Quatre tests dans `GardeFous/PasserelleTest` couvrent le fonctionnement et les garde-fous associés à cette passerelle.
 
 Rien à faire sur un site existant au-delà de la fusion et des commandes habituelles d’après-fusion décrites dans `docs/mise-a-jour-socle.md`.
+
+Proposé par Pascal Fortunati (#49).
 
 ## 2.0.8 — 2026-10-02
 
@@ -46,6 +66,8 @@ Quatre tests couvrent ces changements dans `GardeFous/AdminClientTest`.
 
 Rien à faire sur un site existant au-delà de la fusion et des commandes habituelles d'après-fusion décrites dans `docs/mise-a-jour-socle.md`.
 
+Proposé par Pascal Fortunati (#44).
+
 ## 2.0.7 — 2026-10-02
 
 Deux corrections concernant l'administration Cockpit et l'environnement de développement.
@@ -57,6 +79,8 @@ Le contrôle du contraste ne modifie désormais la classe ou le texte de son ale
 **Les processus Composer ne sont plus interrompus par le timeout par défaut.** `composer.json` définit désormais `"process-timeout": 0`. Les commandes longues lancées par les scripts Composer peuvent ainsi rester actives sans être arrêtées automatiquement.
 
 Rien à faire sur un site existant au-delà de la fusion et de `php bin/install-cockpit.php --force` pour recopier les addons modifiés dans `public/admin/`.
+
+Proposé par Céline Devaux (#42).
 
 ## 2.0.6 — 2026-09-02
 
