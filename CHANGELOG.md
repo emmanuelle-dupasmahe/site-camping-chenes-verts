@@ -12,6 +12,39 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.1.0 — 2026-10-05
+
+Mettre un site à jour depuis le socle demandait six étapes manuelles, dont `install-cockpit.php
+--force`, qui une fois oubliée laissait croire que la fusion n'avait rien changé.
+
+**Une commande déroule la mise à jour.**
+
+```bash
+php bin/maj-socle.php                 # où en est le site, et ce qui existe
+php bin/maj-socle.php --vers=2.0.13   # fusionne et enchaîne les commandes qui suivent
+```
+
+Sans argument, elle affiche la version installée, les versions plus récentes, et les entrées de
+journal qui les séparent, lues depuis le socle. Avec `--vers`, elle crée une branche dédiée,
+fusionne l'étiquette, puis lance `composer install`, `php bin/install-cockpit.php --force`,
+`php bin/purge-cache.php` et les tests.
+
+**Elle refuse de s'exécuter dans quatre cas** : arbre de travail non propre, version inconnue ou
+mal formée, version plus ancienne que celle du site, et version majeure. Cette dernière demande
+une intervention manuelle décrite sous la version dans ce journal, qu'une commande ne remplace
+pas.
+
+En cas de conflit, elle s'arrête et affiche les fichiers à reprendre. Elle ne pousse pas et ne
+fusionne jamais dans `main`.
+
+Les tests sont ignorés sur un site installé sans dépendances de développement, plutôt que de
+faire échouer la mise à jour sur un outil délibérément absent.
+
+`docs/mise-a-jour-socle.md` présente désormais la commande en tête, la procédure manuelle
+restant dessous.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
 ## 2.0.13 — 2026-10-05
 
 Documentation seule. Les deux addons arrivés en 2.0.8 et 2.0.9 n'étaient décrits que dans le
