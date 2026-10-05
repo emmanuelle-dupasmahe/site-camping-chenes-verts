@@ -132,6 +132,29 @@ sa discussion d'annonce ouverte.
   4,5:1, pas de transparence sur du texte, `alt` obligatoire sur les médias.
 - Aucun secret dans le dépôt : ni `.env`, ni clé, ni base de données.
 
+## Licence et crédit
+
+**Une contribution est proposée sous la licence de ce dépôt**, dont le texte est dans
+[LICENSE](LICENSE). En ouvrant une proposition, vous acceptez qu'elle y soit publiée à ces
+conditions.
+
+**Le crédit passe par le dépôt, jamais par l'interface livrée.** Les apports sont nommés dans
+[CONTRIBUTORS.md](CONTRIBUTORS.md), dans l'entrée du journal de la version qui les contient, et
+dans les notes de cette version.
+
+**Rien de ce qui est livré à un client ne porte de signature individuelle**, ni l'administration
+ni le site public. La règle vaut pour tout le monde, mainteneur compris : un site livré affiche
+le client, pas ceux qui l'ont construit. À dix contributions, l'administration deviendrait une
+page de crédits.
+
+**Un composant extérieur dont la licence impose une mention dans l'interface ne peut donc pas
+être intégré.** C'est aussi ce que dit la section « Composants tiers » de la licence : aucun
+composant tiers n'est versionné ici. Les dépendances sont installées par `composer install` et
+`php bin/install-cockpit.php`, et le texte de leur licence est livré avec elles.
+
+Une fonctionnalité développée ailleurs reste donc la bienvenue, à condition d'entrer dans le
+socle comme une contribution, et non comme une dépendance copiée.
+
 ## Discuter avant de décider
 
 Une décision qui change le socle se discute dans les Discussions avant d'être codée, et sa
