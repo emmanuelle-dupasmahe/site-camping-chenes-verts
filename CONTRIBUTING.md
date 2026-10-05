@@ -37,6 +37,18 @@ Les commits sont **en français, à l'impératif** : « Corriger la boucle des o
 « correction de la boucle » ni « fix observers ». Le corps du message dit pourquoi, pas
 comment : le comment est dans le diff.
 
+## La langue
+
+| Où | Langue |
+|---|---|
+| `src/`, `cockpit/` : code, noms et commentaires | anglais |
+| `tests/` : noms de méthodes et commentaires | français |
+| `docs/`, journal, `.github/` | français |
+| Commits, propositions, issues | français |
+
+L'administration et le site public sont en français, comme tout ce qui est lu par un client ou
+par l'équipe. Le code du produit reste en anglais.
+
 Aucune mention d'outil, aucun co-auteur automatique dans les commits et les propositions.
 
 ## Avant de pousser
@@ -62,11 +74,27 @@ son entrée dans [CHANGELOG.md](CHANGELOG.md).
 | La modification touche | `VERSION` et `CHANGELOG.md` |
 |---|---|
 | `src/`, `templates/`, `templates-client/`, `cockpit/`, `public/`, `bin/`, `docs/` | **oui** |
-| l'outillage du projet : `.github/`, ce fichier, `CONTRIBUTORS.md` | **non**, avec l'étiquette `sans version` sur la proposition |
+| l'outillage du projet : `.github/`, ce fichier, `CONTRIBUTORS.md` | **non**, rien à faire |
+
+Le contrôle décide d'après les dossiers touchés : une proposition d'outillage passe sans que
+rien ne lui soit demandé.
 
 Les numéros suivent le versionnage sémantique, avec le sens décrit en tête du journal : majeur
 quand un site demande une intervention manuelle, mineur pour une capacité nouvelle, correctif
 pour une correction.
+
+### L'étiquette `sans version`
+
+Elle sert à une modification **dans les dossiers du produit** qui ne mérite pas d'être
+racontée : une faute dans un commentaire, un lien mort. Jamais à un changement de comportement
+ni à une instruction corrigée.
+
+Une modification fusionnée sans version n'est pas perdue pour autant : elle part chez les sites
+avec la version suivante, puisqu'une étiquette embarque tout l'historique qui la précède. Ce
+qu'elle n'a pas, c'est sa mention dans le journal.
+
+Dans le doute, publier la version. Un numéro ne coûte rien ; une correction qui arrive chez un
+client sans être documentée coûte une enquête.
 
 ### La forme de l'entrée
 
