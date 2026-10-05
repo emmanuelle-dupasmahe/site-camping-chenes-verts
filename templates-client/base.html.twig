@@ -57,10 +57,14 @@
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             
-            <!-- Logo -->
+            <!-- Logo Dynamique CMS -->
             <div class="flex items-center gap-3">
                 <a href="/">
-                    <img src="/assets/logo_camping_relief.png" alt="Logo {{ site.nom|default('Camping Les Chênes Verts') }}" class="h-16 w-auto">
+                    {% if site.logo.path is defined and site.logo.path is not empty %}
+                        <img src="/medias{{ site.logo.path }}" alt="Logo {{ site.nom|default('Camping Les Écureuils Verts') }}" class="h-16 w-auto">
+                    {% else %}
+                        <img src="/assets/logo_camping_relief.png" alt="Logo {{ site.nom|default('Camping Les Écureuils Verts') }}" class="h-16 w-auto">
+                    {% endif %}
                 </a>
             </div>
 
@@ -113,7 +117,7 @@
             
             <!-- Colonne 1 : Informations du camping -->
             <div>
-                <span class="font-heading font-bold text-white text-xl block mb-4">{{ site.nom|default('Camping Les Chênes Verts') }}</span>
+                <span class="font-heading font-bold text-white text-xl block mb-4">{{ site.nom|default('Camping Les Écureuils Verts') }}</span>
                 <p class="mb-2">Route des Gorges<br>07000 Ardèche</p>
                 <p class="font-bold text-white mb-2">Tél : 04 00 00 00 00</p>
                 <span class="inline-block bg-gray-700 text-white text-xs px-2 py-1 rounded">★★★ Atout France</span>
