@@ -12,6 +12,26 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.0.13 — 2026-10-05
+
+Documentation seule. Les deux addons arrivés en 2.0.8 et 2.0.9 n'étaient décrits que dans le
+README, et le nombre de tests annoncé datait d'avant leur arrivée.
+
+**`docs/architecture.md`** cite désormais `AdminClient` et `Passerelle` dans le tableau des
+responsabilités, à côté d'`EditorGuards`.
+
+**`docs/guide-client.md`** décrit ce que le client voit réellement : une administration en
+français, les actions interdites qui ne lui sont plus proposées, et la pastille qui relie le
+site à son administration.
+
+**`docs/securite.md`** documente le cookie de la passerelle : ce qu'il contient, pourquoi il
+n'est pas `httponly`, et dans quels cas la pastille ne s'affiche pas.
+
+**`docs/tests.md`** annonce 250 tests, et son tableau couvre les trois familles ajoutées
+depuis : administration du client, passerelle, version.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
 ## 2.0.12 — 2026-10-05
 
 La pastille de la passerelle restait affichée sur le site alors qu'elle n'avait plus lieu
