@@ -56,17 +56,44 @@ php bin/install-cockpit.php --force
 
 ## Version et journal
 
-| La modification | `VERSION` et `CHANGELOG.md` |
+**Une proposition qui change le produit porte son numéro.** Elle modifie `VERSION` et ajoute
+son entrée dans [CHANGELOG.md](CHANGELOG.md).
+
+| La modification touche | `VERSION` et `CHANGELOG.md` |
 |---|---|
-| change ce qu'un site reçoit ou exige | **oui**, avec une entrée qui dit ce qu'un site existant doit faire |
-| ne touche que l'outillage du projet (intégration continue, modèles d'issue, ce fichier) | **non** |
+| `src/`, `templates/`, `templates-client/`, `cockpit/`, `public/`, `bin/`, `docs/` | **oui** |
+| l'outillage du projet : `.github/`, ce fichier, `CONTRIBUTORS.md` | **non**, avec l'étiquette `sans version` sur la proposition |
 
-Un test refuse que `VERSION` et la première entrée du journal annoncent deux numéros
-différents.
+Les numéros suivent le versionnage sémantique, avec le sens décrit en tête du journal : majeur
+quand un site demande une intervention manuelle, mineur pour une capacité nouvelle, correctif
+pour une correction.
 
-Les numéros suivent le versionnage sémantique, avec le sens décrit en tête de
-[CHANGELOG.md](CHANGELOG.md) : majeur quand un site demande une intervention manuelle, mineur
-pour une capacité nouvelle, correctif pour une correction.
+### La forme de l'entrée
+
+```markdown
+## 2.0.13 — 2026-10-12
+
+Ce qui ne fonctionnait pas, ou ce qui manquait, en une ou deux phrases.
+
+**Ce qui change.** Le détail, du point de vue de la personne qui exploite un site.
+
+Rien à faire sur un site existant au-delà de la fusion.
+```
+
+Trois règles, vérifiées automatiquement :
+
+- le titre reprend exactement le numéro de `VERSION`, suivi de la date au format `AAAA-MM-JJ` ;
+- cette entrée est la première du journal ;
+- elle dit ce qu'un **site existant** doit faire. Le plus souvent « Rien à faire sur un site
+  existant au-delà de la fusion », ou la commande exacte quand `cockpit/` est touché :
+  `php bin/install-cockpit.php --force`.
+
+Une entrée issue d'une contribution extérieure se termine par « Proposé par Prénom Nom (#NN) ».
+
+### Après la fusion
+
+Rien à faire. Dès que `VERSION` change sur `main`, l'étiquette est posée, la version publiée et
+sa discussion d'annonce ouverte.
 
 ## Ce que la relecture vérifie
 
