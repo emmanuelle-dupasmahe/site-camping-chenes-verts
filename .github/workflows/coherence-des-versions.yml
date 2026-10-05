@@ -86,6 +86,8 @@ jobs:
 
           # Le fichier VERSION à l'étiquette doit porter le numéro de l'étiquette.
           for v in $etiquettes; do
+            anterieure "$v" && continue
+
             portee=$(git show "v${v}:VERSION" 2>/dev/null | tr -d ' \t\r\n')
 
             if [ "$portee" != "$v" ]; then
