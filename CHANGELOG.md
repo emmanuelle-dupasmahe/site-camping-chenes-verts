@@ -12,6 +12,21 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.0.11 — 2026-10-05
+
+`composer.json` déclarait `ext-curl` et `ext-json`, mais pas `ext-pdo_sqlite` ni `ext-gd`. Les
+deux sont pourtant indispensables : la première porte la base de données de l'administration,
+la seconde fabrique les copies allégées des images. Le README les présentait d'ailleurs comme
+des prérequis.
+
+**L'installation échoue désormais au bon endroit.** Sur un hébergement dépourvu de ces
+extensions, `composer install` réussissait et l'échec survenait plus loin, à l'installation de
+Cockpit ou au premier envoi d'image, avec un message qui ne nommait pas la cause. Composer
+refuse maintenant d'installer et indique l'extension manquante.
+
+Rien à faire sur un site existant : un site en service tourne forcément sur un hébergement qui
+possède ces extensions, sans quoi il ne fonctionnerait pas.
+
 ## 2.0.10 — 2026-10-03
 
 Le fichier `VERSION` était resté à 2.0.6 alors que les versions 2.0.7, 2.0.8 et 2.0.9 ont été
