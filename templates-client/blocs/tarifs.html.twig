@@ -1,0 +1,58 @@
+{# templates-client/blocs/tarifs.html.twig #}
+<section class="tarifs py-12 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Titre de la section -->
+        <h{{ niveau }} class="text-3xl font-heading font-bold text-vert-chene mb-4 text-center">{{ titre }}</h{{ niveau }}>
+        {% if bloc.introduction %}
+            <p class="text-gris-ardoise mb-8 text-center max-w-2xl mx-auto">{{ bloc.introduction }}</p>
+        {% endif %}
+
+        <!-- Tableau des tarifs (Responsive) -->
+        <div class="overflow-x-auto mb-12 shadow-sm rounded-lg border border-gray-200">
+            <table class="w-full text-left border-collapse bg-white text-sm">
+                <thead>
+                    <tr class="bg-vert-chene text-white">
+                        <th class="p-3 font-semibold">Hébergement</th>
+                        <th class="p-3 font-semibold text-center">Basse</th>
+                        <th class="p-3 font-semibold text-center">Moyenne</th>
+                        <th class="p-3 font-semibold text-center">Haute</th>
+                        <th class="p-3 font-semibold text-center">Très Haute</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-gris-ardoise">
+                    {% for ligne in bloc.lignes %}
+                        <tr class="hover:bg-vert-tendre/50 transition">
+                            <td class="p-3 font-medium text-vert-chene">{{ ligne.libelle }}</td>
+                            <td class="p-3 text-center">{{ ligne.basse }}</td>
+                            <td class="p-3 text-center">{{ ligne.moyenne }}</td>
+                            <td class="p-3 text-center">{{ ligne.haute }}</td>
+                            <td class="p-3 text-center">{{ ligne.tres_haute }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section des Suppléments / Options (WYSIWYG) -->
+        {% if bloc.supplements %}
+            <div class="bg-blanc-creme p-6 rounded-xl border border-gray-200 mb-8">
+                <h3 class="font-heading font-bold text-xl text-vert-chene mb-4">Suppléments et Options</h3>
+                <div class="text-sm text-gris-ardoise prose">
+                    {{ bloc.supplements|raw }}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Repères des Périodes -->
+        {% if bloc.periodes %}
+            <div class="bg-vert-tendre p-6 rounded-xl border border-emerald-100">
+                <h3 class="font-heading font-bold text-xl text-vert-chene mb-4">Repères des Périodes</h3>
+                <div class="text-sm text-gris-ardoise prose">
+                    {{ bloc.periodes|raw }}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</section>

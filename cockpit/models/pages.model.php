@@ -26,6 +26,7 @@ $isContact = "data.type === 'contact'";
 $isFormulaire = "data.type === 'formulaire'";
 $isTemoignages = "data.type === 'temoignages'";
 $isHebergements = "data.type === 'hebergements'";
+$isTarifs = "data.type === 'tarifs'";
 $hasImage = "['hero', 'texte-image'].includes(data.type)";
 $hasTexte = "['texte-image', 'contact', 'formulaire'].includes(data.type)";
 
@@ -94,6 +95,7 @@ return [
                                 ['value' => 'texte-image', 'label' => 'Texte et image'],
                                 ['value' => 'contact', 'label' => 'Coordonnées'],
                                 ['value' => 'hebergements', 'label' => 'Hébergements (3 cartes)'],
+                                ['value' => 'tarifs', 'label' => 'Tableau de tarifs & options'],
                                 ['value' => 'formulaire', 'label' => 'Formulaire de contact'],
                                 ['value' => 'temoignages', 'label' => 'Témoignages'],
                             ],
@@ -181,7 +183,7 @@ return [
                         'label' => 'Phrase d’introduction',
                         'info' => 'Apparaît sous le titre.',
                         'width' => '1-1',
-                        'condition' => "$isTemoignages ||$isHebergements",
+                        'condition' => "$isTemoignages || $isHebergements || $isTarifs",
                         'opts' => ['multiline' => true, 'maxlength' => 200],
                     ],
                     [
@@ -274,6 +276,46 @@ return [
                         'condition' => $isHebergements,
                     ],
                     // --- FIN CHAMPS BLOC HEBERGEMENTS ---
+
+                    // --- DEBUT CHAMPS BLOC TARIFS ---
+                    [
+                        'name' => 'lignes',
+                        'type' => 'set',
+                        'label' => 'Lignes du tableau des tarifs',
+                        'info' => 'Chaque ligne correspond à un hébergement et ses prix par saison.',
+                        'multiple' => true,
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => [
+                            'display' => '${data.libelle || \'Ligne tarifaire\'}',
+                            'fields' => [
+                                ['name' => 'libelle', 'type' => 'text', 'label' => 'Hébergement / Prestation'],
+                                ['name' => 'basse', 'type' => 'text', 'label' => 'Prix Basse saison'],
+                                ['name' => 'moyenne', 'type' => 'text', 'label' => 'Prix Moyenne saison'],
+                                ['name' => 'haute', 'type' => 'text', 'label' => 'Prix Haute saison'],
+                                ['name' => 'tres_haute', 'type' => 'text', 'label' => 'Prix Très haute saison'],
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'supplements',
+                        'type' => 'wysiwyg',
+                        'label' => 'Bloc Suppléments et Options',
+                        'info' => 'Texte explicatif pour la taxe de séjour, les animaux, etc.',
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => ['toolbar' => $toolbar],
+                    ],
+                    [
+                        'name' => 'periodes',
+                        'type' => 'wysiwyg',
+                        'label' => 'Bloc Repères des Périodes',
+                        'info' => 'Détails des mois de basse, moyenne et haute saison.',
+                        'width' => '1-1',
+                        'condition' => $isTarifs,
+                        'opts' => ['toolbar' => $toolbar],
+                    ],
+                    // --- FIN CHAMPS BLOC TARIFS ---
 
                     [
                         'name' => 'afficherHoraires',
