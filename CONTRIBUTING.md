@@ -152,9 +152,6 @@ page de crédits.
 composant tiers n'est versionné ici. Les dépendances sont installées par `composer install` et
 `php bin/install-cockpit.php`, et le texte de leur licence est livré avec elles.
 
-Une fonctionnalité développée ailleurs reste donc la bienvenue, à condition d'entrer dans le
-socle comme une contribution, et non comme une dépendance copiée.
-
 ## Discuter avant de décider
 
 Une décision qui change le socle se discute dans les Discussions avant d'être codée, et sa
