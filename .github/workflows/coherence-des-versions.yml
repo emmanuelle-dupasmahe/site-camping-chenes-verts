@@ -1,0 +1,103 @@
+# Compare trois sources qui doivent dire la même chose : les entrées du
+# journal, les étiquettes du dépôt, les versions publiées.
+#
+# Il signale, il ne corrige pas. Une étiquette posée automatiquement sur un état
+# ancien produirait une livraison que personne n'a décidée.
+#
+# S'exécute après chaque publication, moment où un écart peut apparaître, et à
+# la demande. Ce travail ne s'exécute que sur le dépôt du socle.
+
+name: Cohérence des versions
+
+on:
+  workflow_run:
+    workflows: ["Publier la version"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coherence:
+    name: Cohérence
+    runs-on: ubuntu-latest
+    if: github.event.repository.is_template || github.repository == 'jean-ely-pro/site-vitrine-cockpit-php'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Comparer le journal, les étiquettes et les versions publiées
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+
+          # Les versions antérieures précèdent les règles actuelles : avant la
+          # 2.0.10, les versions n'étaient pas toutes publiées et VERSION n'était
+          # pas vérifié. Elles ne sont pas comparées.
+          DEPUIS="2.0.10"
+
+          anterieure() {
+            plus_ancienne=$( { echo "$1"; echo "$DEPUIS"; } | sort -V | head -1 )
+            [ "$plus_ancienne" != "$DEPUIS" ]
+          }
+
+          journal=$(grep -oE '^## [0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | cut -d' ' -f2 | sort -V)
+          etiquettes=$(git tag -l 'v*' | sed 's/^v//' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V)
+          publiees=$(gh release list --limit 100 --json tagName --jq '.[].tagName' | sed 's/^v//' | sort -V)
+
+          echo "Journal     : $(echo "$journal" | tr '\n' ' ')"
+          echo "Étiquettes  : $(echo "$etiquettes" | tr '\n' ' ')"
+          echo "Publiées    : $(echo "$publiees" | tr '\n' ' ')"
+          echo
+
+          ecarts=0
+
+          # Une version décrite dans le journal mais jamais étiquetée ne peut pas
+          # être fusionnée par un site.
+          for v in $journal; do
+            if ! echo "$etiquettes" | grep -qx "$v"; then
+              echo "::warning::La version ${v} est décrite dans le journal mais n'a pas d'étiquette."
+              ecarts=$((ecarts + 1))
+            fi
+          done
+
+          # Une étiquette sans entrée de journal ne dit pas ce qu'elle apporte.
+          for v in $etiquettes; do
+            if ! echo "$journal" | grep -qx "$v"; then
+              echo "::warning::L'étiquette v${v} n'a pas d'entrée dans le journal."
+              ecarts=$((ecarts + 1))
+            fi
+          done
+
+          # Une étiquette sans version publiée laisse la page d'accueil du dépôt
+          # annoncer une version plus ancienne que la dernière.
+          for v in $etiquettes; do
+            anterieure "$v" && continue
+
+            if ! echo "$publiees" | grep -qx "$v"; then
+              echo "::warning::L'étiquette v${v} n'a pas de version publiée."
+              ecarts=$((ecarts + 1))
+            fi
+          done
+
+          # Le fichier VERSION à l'étiquette doit porter le numéro de l'étiquette.
+          for v in $etiquettes; do
+            portee=$(git show "v${v}:VERSION" 2>/dev/null | tr -d ' \t\r\n')
+
+            if [ "$portee" != "$v" ]; then
+              echo "::warning::L'étiquette v${v} désigne un état dont VERSION dit « ${portee:-rien} »."
+              ecarts=$((ecarts + 1))
+            fi
+          done
+
+          echo
+          if [ "$ecarts" -eq 0 ]; then
+            echo "Les trois sources concordent."
+          else
+            echo "::error::${ecarts} écart(s) relevé(s). Ils sont à corriger à la main : ce contrôle ne pose ni étiquette ni version."
+            exit 1
+          fi
