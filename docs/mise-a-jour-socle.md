@@ -295,3 +295,17 @@ publiées.
 Une étiquette ne se pose pas à chaque fusion sur le socle : plusieurs correctifs peuvent
 attendre la même. On en ajoute une quand il y a quelque chose qu'un site doit pouvoir
 reprendre — c'est l'étiquette, et non la branche, qui est l'unité livrée.
+
+### Une version publiée ne change plus
+
+Une fois la version publiée, son étiquette ne peut plus être ni déplacée ni supprimée, et les
+fichiers qui l'accompagnent sont figés. Un numéro désigne donc toujours le même contenu : deux
+sites qui fusionnent `v2.1.0`, à six mois d'intervalle, reçoivent exactement la même chose.
+
+Ce que cela change en pratique :
+
+- la commande de mise à jour peut être relancée sans crainte qu'une étiquette ait bougé entre
+  deux `git fetch` ;
+- comparer la version d'un site avec le journal suffit à savoir ce qu'il a reçu ;
+- une erreur dans une version publiée se corrige par la version suivante, jamais en reprenant
+  le même numéro.

@@ -12,6 +12,17 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.1.1 — 2026-10-06
+
+Documentation seule. La procédure de mise à jour expliquait que l'étiquette est l'unité livrée,
+sans dire qu'une étiquette publiée est désormais définitive.
+
+**`docs/mise-a-jour-socle.md`** précise qu'une version publiée ne change plus : son étiquette
+n'est ni déplaçable ni supprimable, et un numéro désigne toujours le même contenu. Deux sites
+qui fusionnent la même version reçoivent donc exactement la même chose, quel que soit le moment.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
 ## 2.1.0 — 2026-10-05
 
 Mettre un site à jour depuis le socle demandait six étapes manuelles, dont `install-cockpit.php
