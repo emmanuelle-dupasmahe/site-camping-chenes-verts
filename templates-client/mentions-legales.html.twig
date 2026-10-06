@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% set resume = 'Éditeur, hébergeur et informations légales' ~ (site.nom ? ' de ' ~ site.nom : '') ~ '.' %}
+{% block title %}Mentions légales{% if site.nom %} — {{ site.nom }}{% endif %}{% endblock %}
+
+{% block main %}
+    <article class="max-w-4xl mx-auto my-12 bg-white p-6 md:p-10 rounded-xl shadow-sm border border-gray-100 font-sans text-gris-ardoise">
+        
+        <h1 class="text-3xl font-heading font-bold text-vert-chene mb-8 text-center">Mentions légales</h1>
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">Éditeur du site</h2>
+        <p class="mb-4 leading-relaxed">
+            {% if site.nom %}<strong class="text-vert-chene">{{ site.nom }}</strong><br>{% endif %}
+            {% if legal.formeJuridique %}{{ legal.formeJuridique }}<br>{% endif %}
+            {% if site.adresse %}{{ site.adresse|nl2br }}<br>{% endif %}
+            {% if site.telephone %}Téléphone : <a href="tel:{{ tel_href(site.telephone) }}" class="text-vert-chene hover:underline">{{ site.telephone }}</a><br>{% endif %}
+            {% if site.email %}Courriel : <a href="mailto:{{ site.email }}" class="text-vert-chene hover:underline">{{ site.email }}</a>{% endif %}
+        </p>
+
+        {% if site.siret or legal.tva or legal.directeurPublication %}
+            <ul class="list-disc pl-5 mb-4 space-y-2">
+                {% if site.siret %}<li>SIRET : {{ site.siret }}</li>{% endif %}
+                {% if legal.tva %}<li>TVA intracommunautaire : {{ legal.tva }}</li>{% endif %}
+                {% if legal.directeurPublication %}
+                    <li>Directeur de la publication : {{ legal.directeurPublication }}</li>
+                {% endif %}
+            </ul>
+        {% endif %}
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">Hébergement</h2>
+        {% if legal.hebergeurNom or legal.hebergeurAdresse %}
+            <p class="mb-4 leading-relaxed">
+                {% if legal.hebergeurNom %}<strong class="text-vert-chene">{{ legal.hebergeurNom }}</strong><br>{% endif %}
+                {% if legal.hebergeurAdresse %}{{ legal.hebergeurAdresse|nl2br }}{% endif %}
+            </p>
+        {% else %}
+            <p class="mb-4 text-gray-500 italic">Les informations sur l’hébergeur du site n’ont pas encore été renseignées.</p>
+        {% endif %}
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">Propriété intellectuelle</h2>
+        <p class="mb-4 leading-relaxed">
+            L’ensemble des textes et des images de ce site est protégé. Toute reproduction, même
+            partielle, est soumise à l’autorisation préalable de l’éditeur.
+        </p>
+
+        {% if legal.complementMentions %}
+            <div class="mt-8 text-gris-ardoise">
+                {{ legal.complementMentions|raw }}
+            </div>
+        {% endif %}
+
+    </article>
+{% endblock %}

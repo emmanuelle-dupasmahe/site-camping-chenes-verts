@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% set duree = legal.dureeConservation|default('12 mois') %}
+{% set resume = 'Ce que deviennent les informations transmises par le formulaire de contact.' %}
+{% block title %}Politique de confidentialité{% if site.nom %} — {{ site.nom }}{% endif %}{% endblock %}
+
+{% block main %}
+    <article class="max-w-4xl mx-auto my-12 bg-white p-6 md:p-10 rounded-xl shadow-sm border border-gray-100 font-sans text-gris-ardoise">
+        
+        <h1 class="text-3xl font-heading font-bold text-vert-chene mb-8 text-center">Politique de confidentialité</h1>
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">Ce qui est collecté</h2>
+        <p class="mb-4 leading-relaxed">
+            Seul le formulaire de contact collecte des informations : votre nom, votre adresse
+            e-mail et le message que vous écrivez. Rien d’autre n’est recueilli — ce site
+            n’utilise ni mesure d’audience, ni traceur publicitaire, et ne dépose aucun cookie.
+        </p>
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">À quoi elles servent</h2>
+        <p class="mb-4 leading-relaxed">
+            Uniquement à répondre à votre demande. Elles ne sont ni vendues, ni cédées, ni
+            utilisées pour vous envoyer autre chose que cette réponse.
+        </p>
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">Combien de temps</h2>
+        <p class="mb-4 leading-relaxed">Les messages sont conservés <strong class="text-vert-chene">{{ duree }}</strong>, puis supprimés.</p>
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">Vos droits</h2>
+        <p class="mb-4 leading-relaxed">
+            Vous pouvez demander à consulter, corriger ou supprimer les informations vous
+            concernant{% if site.email %}, en écrivant à
+            <a href="mailto:{{ site.email }}" class="text-vert-chene font-bold hover:underline">{{ site.email }}</a>{% endif %}. La demande est
+            traitée dans un délai d’un mois.
+        </p>
+
+        <h2 class="text-xl font-heading font-bold text-marron-ecorce mt-8 mb-4 border-b border-gray-200 pb-2">Qui les détient</h2>
+        <p class="mb-4 leading-relaxed">
+            {% if site.nom %}<strong class="text-vert-chene">{{ site.nom }}</strong>{% else %}L’éditeur du site{% endif %}{% if site.adresse %},
+            {{ site.adresse|replace({"\n": ", "}) }}{% endif %}. Les informations sont conservées
+            sur l’hébergement du site{% if legal.hebergeurNom %}, chez <strong class="text-vert-chene">{{ legal.hebergeurNom }}</strong>{% endif %},
+            et ne sont transmises à personne d’autre.
+        </p>
+
+        {% if legal.complementConfidentialite %}
+            <div class="mt-8 text-gris-ardoise">
+                {{ legal.complementConfidentialite|raw }}
+            </div>
+        {% endif %}
+
+        <div class="mt-10 text-center">
+            <a href="/mentions-legales" class="inline-block bg-vert-tendre text-vert-chene px-6 py-2 rounded-full font-bold hover:bg-vert-chene hover:text-white transition">
+                ← Retour aux mentions légales
+            </a>
+        </div>
+
+    </article>
+{% endblock %}

@@ -6,6 +6,16 @@
 
 <section class="bloc bloc-texte-image bloc-texte-image--{{ position }}">
 
+    <!-- Image placée en premier dans le code si le CMS indique "gauche" -->
+    {% if position == 'gauche' %}
+        {% include 'partials/image.html.twig' with {
+            asset: bloc.image,
+            alt: bloc.alt,
+            classe: 'bloc-texte-image__image',
+            sizes: '(min-width: 48rem) 30rem, 100vw'
+        } only %}
+    {% endif %}
+
     <div class="bloc-texte-image__texte">
         {% if titre %}
             <h{{ niveau }} class="flex items-center flex-wrap gap-3">
@@ -16,8 +26,14 @@
                     {# On affiche le texte principal #}
                     <span>{{ titre_morceaux[0]|trim }}</span>
                     
-                    {# On affiche le badge en retirant la parenthèse fermante #}
-                    <span class="bg-vert-tendre text-vert-chene font-bold px-4 py-1.5 rounded-full border border-vert-chene shadow-sm tracking-wide mt-1 md:mt-0 font-sans" style="font-size: 1.125rem; line-height: 1;">
+                    {# On affiche le badge avec l'icône tipi #}
+                    <span class="inline-flex items-center gap-2 bg-vert-tendre text-vert-chene font-bold px-4 py-1.5 rounded-full border border-vert-chene shadow-sm tracking-wide mt-1 md:mt-0 font-sans" style="font-size: 1.125rem; line-height: 1;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21 12 3 5 21" />
+                            <path d="m12 21-3-4.5 3-4.5" />
+                            <path d="M12 21v-9" />
+                            <path d="M3 21h18" />
+                        </svg>
                         {{ titre_morceaux[1]|replace({')': ''})|trim }}
                     </span>
                 {% else %}
@@ -33,11 +49,14 @@
         {% endif %}
     </div>
 
-    {% include 'partials/image.html.twig' with {
-        asset: bloc.image,
-        alt: bloc.alt,
-        classe: 'bloc-texte-image__image',
-        sizes: '(min-width: 48rem) 30rem, 100vw'
-    } only %}
+    <!-- Image placée en second dans le code si le CMS indique "droite" -->
+    {% if position == 'droite' %}
+        {% include 'partials/image.html.twig' with {
+            asset: bloc.image,
+            alt: bloc.alt,
+            classe: 'bloc-texte-image__image',
+            sizes: '(min-width: 48rem) 30rem, 100vw'
+        } only %}
+    {% endif %}
 
 </section>

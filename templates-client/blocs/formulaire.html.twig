@@ -140,7 +140,7 @@
                            {% if champs.consentement is defined %}aria-invalid="true" aria-describedby="erreur-consentement"{% endif %}>
                     <label for="contact-consentement" class="ml-3 text-sm text-gray-600">
                         J’accepte que mes données soient conservées pour traiter ma demande de réservation.
-                        <a href="/politique-de-confidentialite" class="text-vert-chene underline hover:text-marron-ecorce">Politique de confidentialité</a>.
+                        <a href="/confidentialite" class="text-vert-chene underline hover:text-marron-ecorce">Politique de confidentialité</a>.
                     </label>
                 </div>
                 {% if champs.consentement is defined %}<span class="text-red-500 text-xs mt-2 block" id="erreur-consentement">{{ champs.consentement }}</span>{% endif %}

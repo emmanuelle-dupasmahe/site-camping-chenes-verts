@@ -55,7 +55,8 @@
 /* --- SECTION TEXTE-IMAGE --- */
 
 .bloc-texte-image {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 2.5rem;
   max-width: 1200px;
   margin: 4rem auto;
@@ -63,46 +64,35 @@
   align-items: center;
 }
 
-/* Sur mobiles : on empile le texte puis l'image */
-@media (max-width: 47.99rem) {
-  .bloc-texte-image__texte {
-    grid-row: 1;
-  }
-
-  .bloc-texte-image__image {
-    grid-row: 2;
-  }
-}
-
-/* Sur tablettes et PC : Grille à 2 colonnes égales */
+/* Sur tablettes et PC : Côte à côte à 50/50 */
 @media (min-width: 48rem) {
   .bloc-texte-image {
-    grid-template-columns: 1fr 1fr;
+    flex-direction: row;
+    justify-content: space-between;
     gap: 4rem;
   }
 
-  /* Par défaut (ou réglé sur --droite) : Texte colonne 1, Image colonne 2 */
-  .bloc-texte-image__texte {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
+  /* Règle vitale : Le texte et l'image prennent exactement la moitié de l'espace chacun */
+  .bloc-texte-image__texte,
+  .bloc-texte-image>img,
+  .bloc-texte-image>picture,
   .bloc-texte-image__image {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  /* Si le CMS est réglé sur --gauche : Image colonne 1, Texte colonne 2 */
-  .bloc-texte-image.bloc-texte-image--gauche .bloc-texte-image__texte {
-    grid-column: 2 !important;
-  }
-
-  .bloc-texte-image.bloc-texte-image--gauche .bloc-texte-image__image {
-    grid-column: 1 !important;
+    flex: 1;
+    width: 100%;
+    max-width: 50%;
   }
 }
 
-/* Styles des éléments internes */
+/* --- STYLES INTERNES --- */
+
+.bloc-texte-image__image {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+  max-height: 450px;
+  /* Empêche l'image de devenir trop haute */
+}
+
 .bloc-texte-image__texte h2 {
   font-family: 'Nunito', sans-serif;
   font-size: 2.25rem;
@@ -118,14 +108,6 @@
   color: var(--couleur-texte);
   line-height: 1.6;
   margin-bottom: 1rem;
-}
-
-.bloc-texte-image__image {
-  width: 100%;
-  height: auto;
-  border-radius: 0.75rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  object-fit: cover;
 }
 
 .bloc-texte-image__texte a {
