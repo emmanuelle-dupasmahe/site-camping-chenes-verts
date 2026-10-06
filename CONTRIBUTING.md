@@ -163,5 +163,20 @@ décision que personne ne retrouvera.
 Les propositions sont relues avant fusion. Une relecture qui demande une modification n'est pas
 un refus : elle dit ce qui manque pour que la proposition entre.
 
+La fusion se fait par un commit de fusion, le seul mode ouvert : c'est lui qui relie une ligne
+de code à la discussion qui l'a décidée. Si `main` a avancé entre-temps, le bouton « Update
+branch » est à utiliser avant de fusionner : les contrôles doivent être verts sur un état à
+jour.
+
+La branche est supprimée après la fusion. Elle reste restaurable depuis la proposition, d'un
+bouton.
+
+Une remarque se dépose dans la proposition ou dans une issue, jamais sur un commit : le dépôt
+n'accepte pas les commentaires de commit, que personne ne retrouve ensuite.
+
+Une poussée ne peut pas créer ou mettre à jour plus de cinq branches ou étiquettes à la fois.
+Le refus vient du serveur et sa cause est rarement évidente : elle est presque toujours un
+`git push --tags` ou un `git push --all` lancé par mégarde.
+
 Merci de contribuer. Les apports sont crédités dans [CONTRIBUTORS.md](CONTRIBUTORS.md) et
 nommés dans le journal des versions.
