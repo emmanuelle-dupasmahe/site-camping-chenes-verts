@@ -14,12 +14,26 @@
             <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
               <!-- Image -->
                 {% if carte.image.path is defined %}
-                    <img src="/medias{{ carte.image.path }}" alt="{{ carte.titre }}" class="w-full h-48 object-cover">
+                    {# On nettoie le texte alternatif de l'image pour l'accessibilité #}
+                    <img src="/medias{{ carte.image.path }}" alt="{{ carte.titre|split('(')[0]|trim }}" class="w-full h-48 object-cover">
                 {% endif %}
                 
                 <!-- Contenu de la carte -->
                 <div class="p-6 flex flex-col flex-grow">
-                    <h3 class="font-bold text-xl mb-4 text-vert-chene">{{ carte.titre }}</h3>
+                    
+                    <!-- Titre avec Badge dynamique -->
+                    <h3 class="font-bold text-xl mb-4 text-vert-chene flex items-center flex-wrap gap-2">
+                        {% if '(' in carte.titre %}
+                            {% set titre_morceaux = carte.titre|split('(') %}
+                            <span>{{ titre_morceaux[0]|trim }}</span>
+                            <span class="bg-vert-tendre text-vert-chene text-sm font-bold px-3 py-1 rounded-full border border-vert-chene shadow-sm tracking-wide mt-1 md:mt-0">
+                                {{ titre_morceaux[1]|replace({')': ''})|trim }}
+                            </span>
+                        {% else %}
+                            <span>{{ carte.titre }}</span>
+                        {% endif %}
+                    </h3>
+                    
                     <!-- Caractéristiques (WYSIWYG pour faire des listes à puces) -->
                     <div class="text-sm text-gris-ardoise mb-6 flex-grow">
                         {{ carte.caracteristiques|raw }}
