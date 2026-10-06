@@ -9,7 +9,7 @@ de vérification lit le site réellement servi.
 composer test
 ```
 
-250 tests couvrent les garde-fous du produit : ce qui décide de ce qu'un visiteur reçoit, et ce
+255 tests couvrent les garde-fous du produit : ce qui décide de ce qu'un visiteur reçoit, et ce
 qui empêche le site d'être cassé depuis l'administration.
 
 | Ce qui est protégé | Exemples |
@@ -31,6 +31,7 @@ qui empêche le site d'être cassé depuis l'administration.
 | Administration du client | les actions interdites restent masquées, les traductions sont chargées |
 | Passerelle | la pastille ne s'affiche que sur une session confirmée, et l'adresse de l'administration ne figure dans aucun fichier public |
 | Version | `VERSION` suit la première entrée du journal, et porte un numéro de la forme X.Y.Z |
+| Mise à jour d'un site | la commande refuse un arbre de travail non propre, une version inconnue, une version plus ancienne que celle du site, une version majeure |
 
 Les tests ne touchent pas au réseau et ne démarrent pas Cockpit : ils s'exécutent en moins
 d'une seconde. Un seul lit les fichiers de l'administration installée, pour confronter les

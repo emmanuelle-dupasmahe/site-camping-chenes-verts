@@ -12,6 +12,17 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.1.2 — 2026-10-06
+
+Documentation seule. `docs/tests.md` annonçait 250 tests alors que la suite en exécute 255 : les
+cinq refus de `bin/maj-socle.php`, arrivés en 2.1.0, n'étaient comptés ni décrits.
+
+**`docs/tests.md`** annonce le bon nombre et ajoute une ligne au tableau des garde-fous pour la
+mise à jour d'un site : arbre de travail non propre, version inconnue, version plus ancienne que
+celle du site, version majeure.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
 ## 2.1.1 — 2026-10-06
 
 Documentation seule. La procédure de mise à jour expliquait que l'étiquette est l'unité livrée,
