@@ -15,7 +15,7 @@
               <!-- Image -->
                 {% if carte.image.path is defined %}
                     {# On nettoie le texte alternatif de l'image pour l'accessibilité #}
-                    <img src="/medias{{ carte.image.path }}" alt="{{ carte.titre|split('(')[0]|trim }}" class="w-full h-48 object-cover">
+                    <img src="/medias{{ carte.image.path }}" alt="{{ carte.titre|split('(')[0]|trim }}" class="w-full h-48 object-cover" width="800" height="600">
                 {% endif %}
                 
                 <!-- Contenu de la carte -->

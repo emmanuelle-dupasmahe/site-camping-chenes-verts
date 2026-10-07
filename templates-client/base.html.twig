@@ -17,13 +17,8 @@
         <script type="application/ld+json">{{ jsonld|raw }}</script>
     {% endif %}
 
-    <!-- Importation des polices Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
-
-    <!-- Configuration Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuration Tailwind CSS locale -->
+    <script src="/assets/tailwind.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -34,10 +29,6 @@
                         'vert-tendre': '#F0FDF4',
                         'blanc-creme': '#FAFAFA',
                         'gris-ardoise': '#1F2937',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Nunito', 'sans-serif'],
                     }
                 }
             }
@@ -62,9 +53,9 @@
             <div class="flex items-center gap-3">
                 <a href="/">
                     {% if site.logo.path is defined and site.logo.path is not empty %}
-                        <img src="/medias{{ site.logo.path }}" alt="Logo {{ site.nom|default('Camping Les Écureuils Verts') }}" class="h-16 w-auto">
+                        <img src="/medias{{ site.logo.path }}" alt="Logo {{ site.nom|default('Camping Les Écureuils Verts') }}" class="h-16 w-auto" width="200" height="64">
                     {% else %}
-                        <img src="/assets/logo_camping_relief.png" alt="Logo {{ site.nom|default('Camping Les Écureuils Verts') }}" class="h-16 w-auto">
+                        <img src="/assets/logo_camping_relief.png" alt="Logo {{ site.nom|default('Camping Les Écureuils Verts') }}" class="h-16 w-auto" width="200" height="64">
                     {% endif %}
                 </a>
             </div>

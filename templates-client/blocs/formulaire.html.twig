@@ -87,11 +87,12 @@
                     <label for="contact-hebergement" class="block text-sm font-semibold text-gris-ardoise mb-1">Hébergement souhaité *</label>
                     <select id="contact-hebergement" name="hebergement" required class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-vert-chene outline-none bg-white">
                         <option value="" {% if valeurs.hebergement|default('') == '' %}selected{% endif %}>Sélectionnez une formule...</option>
-                        <option value="Emplacement nu" {% if valeurs.hebergement|default('') == 'Emplacement nu' %}selected{% endif %}>Emplacement nu (Tente / Caravane)</option>
-                        <option value="Emplacement Camping-car" {% if valeurs.hebergement|default('') == 'Emplacement Camping-car' %}selected{% endif %}>Emplacement Camping-car</option>
+                        <option value="Emplacement nu" {% if valeurs.hebergement|default('') == 'Emplacement nu' %}selected{% endif %}>Emplacement nu (Tente / Caravane / Camping car)</option>
+                        <option value="Emplacement nu avec électricité" {% if valeurs.hebergement|default('') == 'Emplacement nu' %}selected{% endif %}>Emplacement nu avec électricité(Tente / Caravane / Camping car)</option>
                         <option value="Mobil-home 4 places" {% if valeurs.hebergement|default('') == 'Mobil-home 4 places' %}selected{% endif %}>Mobil-home 4 personnes</option>
                         <option value="Mobil-home 6 places" {% if valeurs.hebergement|default('') == 'Mobil-home 6 places' %}selected{% endif %}>Mobil-home 6 personnes</option>
-                        <option value="Tente Lodge" {% if valeurs.hebergement|default('') == 'Tente Lodge' %}selected{% endif %}>Tente Lodge Safari</option>
+                        <option value="Chalet">Chalet</option>
+                        <option value="Tente Lodge" {% if valeurs.hebergement|default('') == 'Tente Lodge' %}selected{% endif %}>Tente Lodge</option>
                     </select>
                 </div>
             </div>
