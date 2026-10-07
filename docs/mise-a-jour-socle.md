@@ -11,6 +11,31 @@ qui existe, et en installer un nouveau.
 Tout se passe dans le dépôt du site, sur un poste de développement. La mise en ligne vient
 après, à l'étape 6.
 
+### La commande
+
+```bash
+php bin/maj-socle.php                 # où en est le site, et ce qui existe
+php bin/maj-socle.php --vers=2.0.13   # fusionne et enchaîne les commandes qui suivent
+```
+
+Elle déroule les étapes 1 à 5 décrites plus bas : branche dédiée, fusion de l'étiquette, puis
+`composer install`, `install-cockpit.php --force`, `purge-cache.php` et les tests.
+
+Elle s'arrête, sans rien faire, dans quatre cas :
+
+| Cas | Pourquoi |
+|---|---|
+| Arbre de travail non propre | Une fusion par-dessus des modifications en cours est irrattrapable |
+| Version inconnue, ou numéro mal formé | La liste des versions disponibles est affichée |
+| Version plus ancienne que celle du site | Elle n'apporterait rien |
+| Version **majeure** | Elle demande une intervention manuelle, décrite sous la version dans le journal |
+
+En cas de conflit, elle s'arrête et affiche les fichiers à reprendre. Elle ne pousse pas et ne
+fusionne jamais dans `main` : la relecture reste humaine.
+
+Les étapes qui suivent décrivent ce que fait cette commande. Les lire reste utile pour
+comprendre, pour reprendre la main après un conflit, ou pour une version majeure.
+
 ### 1. Voir où en est le site
 
 ```bash
@@ -25,11 +50,15 @@ antérieur à `v1.0.0` : la première fusion le posera.
 
 ```bash
 git fetch socle --tags
-git tag -l 'v*'
+git tag -l 'v*' --sort=v:refname
 ```
 
 `git tag -l` sans motif listerait aussi les étiquettes propres au site ; `'v*'` ne garde que
 celles du socle.
+
+`--sort=v:refname` n'est pas un détail : le tri par défaut est alphabétique, et il place
+`v2.0.10` entre `v2.0.1` et `v2.0.2`. La dernière version de la liste ne serait pas la plus
+récente.
 
 Lire ensuite ce qu'apporte chaque version entre celle du site et celle visée, dans
 [CHANGELOG.md](../CHANGELOG.md).
@@ -46,12 +75,28 @@ leurs interventions dans l'ordre du journal.
 
 ### 3. Fusionner
 
+Se positionner sur la branche principale et récupérer les dernières modifications :
+
 ```bash
 git checkout main
 git pull
-git checkout -b maj-socle
-git merge v2.0.4
 ```
+
+Créer une branche dédiée à la mise à jour du socle :
+
+```bash
+git checkout -b maj-socle
+```
+
+Fusionner ensuite la nouvelle version du socle :
+
+```bash
+git merge v2.0.8 --allow-unrelated-histories
+```
+
+L’option `--allow-unrelated-histories` permet d’autoriser la fusion lorsque les deux historiques Git n’ont pas d’ancêtre commun.
+
+Ce cas peut notamment se présenter lorsque le dépôt du projet vient d’être initialisé et que la version du socle utilisée pour effectuer la mise à jour possède un historique Git différent.
 
 Toujours sur une branche : la fusion se relit avant d'entrer dans `main`.
 
@@ -250,3 +295,17 @@ publiées.
 Une étiquette ne se pose pas à chaque fusion sur le socle : plusieurs correctifs peuvent
 attendre la même. On en ajoute une quand il y a quelque chose qu'un site doit pouvoir
 reprendre — c'est l'étiquette, et non la branche, qui est l'unité livrée.
+
+### Une version publiée ne change plus
+
+Une fois la version publiée, son étiquette ne peut plus être ni déplacée ni supprimée, et les
+fichiers qui l'accompagnent sont figés. Un numéro désigne donc toujours le même contenu : deux
+sites qui fusionnent `v2.1.0`, à six mois d'intervalle, reçoivent exactement la même chose.
+
+Ce que cela change en pratique :
+
+- la commande de mise à jour peut être relancée sans crainte qu'une étiquette ait bougé entre
+  deux `git fetch` ;
+- comparer la version d'un site avec le journal suffit à savoir ce qu'il a reçu ;
+- une erreur dans une version publiée se corrige par la version suivante, jamais en reprenant
+  le même numéro.
