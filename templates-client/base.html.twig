@@ -17,23 +17,8 @@
         <script type="application/ld+json">{{ jsonld|raw }}</script>
     {% endif %}
 
-    <!-- Configuration Tailwind CSS locale -->
-    <script src="/assets/tailwind.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'vert-chene': '#1F5E3D',
-                        'marron-ecorce': '#9E5425',
-                        'vert-tendre': '#F0FDF4',
-                        'blanc-creme': '#FAFAFA',
-                        'gris-ardoise': '#1F2937',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/assets/css/tailwind.css">
    
 </head>
 <body class="bg-blanc-creme text-gris-ardoise font-sans antialiased">

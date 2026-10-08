@@ -33,6 +33,10 @@ SPEC.md
 /vendor/
 node_modules/
 
+/public/assets/css/input.css
+package-lock.json
+package.json
+tailwind.config.js
 # ─── Logs ───
 *.log
 
