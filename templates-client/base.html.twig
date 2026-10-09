@@ -45,7 +45,7 @@
                 </a>
             </div>
 
-            <!-- Menu Desktop Dynamique (Géré par le CMS) -->
+            <!-- Menu Desktop (Géré par le CMS) -->
             {% if menu|default([]) is not empty or afficherActualites|default(false) %}
                 <nav class="hidden lg:flex" aria-label="Menu principal">
                     <ul class="flex gap-6 font-medium text-gris-ardoise text-sm items-center">
@@ -53,9 +53,7 @@
                             {% set adresse = entree.slug == accueilSlug|default('accueil') ? '/' : '/' ~ entree.slug %}
                             {% set estActif = (entree.slug == slug|default(null)) %}
                             
-                            <!-- Les classes de style sont maintenant sur le <li> -->
                             <li class="{{ estActif ? 'text-vert-chene font-bold border-b-2 border-vert-chene pb-1' : 'hover:text-vert-chene transition' }}">
-                                <!-- Le lien <a> retrouve sa syntaxe d'origine stricte -->
                                 <a href="{{ adresse }}"{% if estActif %} aria-current="page"{% endif %}>{{ entree.libelle }}</a>
                             </li>
                         {% endfor %}
@@ -70,18 +68,43 @@
                 </nav>
             {% endif %}
 
-            <!-- Bouton Réserver -->
-            <div class="hidden md:block">
-                <a href="/reservation" class="bg-vert-chene hover:bg-emerald-900 text-white px-6 py-2 rounded-full font-bold shadow-md transition">Réserver</a>
-            </div>
+            <!-- Bouton Réserver & Menu Burger alignés à droite -->
+            <div class="flex items-center gap-4">
+                <div class="hidden md:block">
+                    <a href="/reservation" class="bg-vert-chene hover:bg-emerald-900 text-white px-6 py-2 rounded-full font-bold shadow-md transition">Réserver</a>
+                </div>
 
-            <!-- Menu Burger Mobile -->
-            <button class="md:hidden text-vert-chene focus:outline-none" aria-label="Ouvrir le menu">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
+                <!-- Menu Burger Mobile (masqué sur grand écran grâce à lg:hidden) -->
+                <button id="btn-burger" class="lg:hidden text-vert-chene focus:outline-none p-1" aria-label="Ouvrir le menu">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
+
+        <!-- Menu Mobile Déroulant (Sorti du conteneur principal pour s'étaler sur toute la largeur) -->
+        {% if menu|default([]) is not empty or afficherActualites|default(false) %}
+            <div id="menu-principal" class="hidden lg:hidden bg-white border-b border-gray-200 shadow-md px-6 py-4">
+                <ul class="flex flex-col gap-4 font-medium text-gris-ardoise text-sm">
+                    {% for entree in menu %}
+                        {% set adresse = entree.slug == accueilSlug|default('accueil') ? '/' : '/' ~ entree.slug %}
+                        {% set estActif = (entree.slug == slug|default(null)) %}
+                        
+                        <li class="{{ estActif ? 'text-vert-chene font-bold' : 'hover:text-vert-chene transition' }}">
+                            <a href="{{ adresse }}"{% if estActif %} aria-current="page"{% endif %}>{{ entree.libelle }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if afficherActualites|default(false) %}
+                        {% set estActifActu = (slug|default(null) == 'actualites') %}
+                        <li class="{{ estActifActu ? 'text-vert-chene font-bold' : 'hover:text-vert-chene transition' }}">
+                            <a href="/actualites"{% if estActifActu %} aria-current="page"{% endif %}>Actualités</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
     </header>
 
     <main id="contenu">
@@ -117,7 +140,6 @@
             <div>
                 <span class="font-heading font-bold text-white text-lg block mb-4">Légal</span>
                 <ul class="space-y-2">
-                    {# Liens fixes : il faudra créer ces pages avec ces adresses dans le CMS #}
                     <li><a href="/mentions-legales" class="hover:text-white transition underline">Mentions légales</a></li>
                     <li><a href="/cgv" class="hover:text-white transition underline">Conditions Générales de Vente (CGV)</a></li>
                     <li><a href="/confidentialite" class="hover:text-white transition underline">Politique de confidentialité</a></li>
@@ -126,5 +148,7 @@
         </div>
     </footer>
 
+    <!-- Script d'interactivité du menu mobile -->
+    <script src="/assets/js/menu.js" defer></script>
 </body>
 </html>
