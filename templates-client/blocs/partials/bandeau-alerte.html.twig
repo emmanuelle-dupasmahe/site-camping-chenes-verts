@@ -1,0 +1,6 @@
+{% if site.bandeauAlerte|default('') is not empty %}
+    <!-- Bandeau d'alerte -->
+    <div class="bg-marron-ecorce text-white text-sm text-center py-2 font-medium">
+        {{ site.bandeauAlerte }}
+    </div>
+{% endif %}

@@ -46,6 +46,18 @@ return [
             'opts' => ['maxlength' => 120],
         ],
         [
+            'name' => 'bandeauAlerte',
+            'type' => 'text',
+            'label' => 'Bandeau d\'alerte',
+            'info' => 'Texte affiché tout en haut de toutes les pages. Laissez le champ vide pour masquer le bandeau.',
+            'required' => false,
+            'localize' => false,
+            'multiple' => false,
+            'group' => 'Identité',
+            'width' => '1-1',
+            'opts' => ['maxlength' => 150],
+        ],
+        [
             'name' => 'logo',
             'type' => 'asset',
             'label' => 'Logo',
