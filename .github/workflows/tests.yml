@@ -24,12 +24,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Les extensions sont celles que le projet exige : pdo_sqlite pour la
       # base, gd pour les images allégées, les autres pour l'installation de
       # Cockpit et la lecture des archives.
-      - uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: '8.3'
           extensions: pdo_sqlite, gd, curl, zip, fileinfo

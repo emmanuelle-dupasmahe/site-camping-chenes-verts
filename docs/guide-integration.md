@@ -12,22 +12,22 @@ Ce qui ne se code pas : textes, images, coordonnées, horaires, couleurs, menu.
 
 ## La règle
 
-> **Tout ce que vous créez va dans `templates-client/` et `client.css`.
-> Vous ne modifiez jamais `templates/` ni `site.css`.**
+> **Tout ce que vous créez va dans `templates-client/`, `cockpit/sections-client/` et
+> `client.css`. Vous ne modifiez jamais `templates/`, `cockpit/sections/` ni `site.css`.**
 
 C'est ce qui permet de récupérer une correction du socle sans conflit : les fichiers que vous
 touchez ne sont pas ceux qu'une mise à jour modifie.
 
 | Vous voulez | Où |
 |---|---|
-| Créer un type de section | `templates-client/blocs/mon-type.html.twig` |
+| Créer un type de section | `templates-client/blocs/mon-type.html.twig` pour l'affichage, `cockpit/sections-client/mon-type.section.php` pour les champs |
 | Styler quoi que ce soit | `public/assets/css/client.css` |
 | Refaire l'en-tête, le pied de page, une page | copier le fichier de `templates/` vers `templates-client/`, **même chemin**, et modifier la copie |
 
 ### Les sections livrées ne se copient pas
 
-`hero`, `texte-image`, `contact`, `formulaire` et `temoignages` sont disponibles telles quelles.
-Rien à copier pour les utiliser.
+`hero`, `texte-image`, `contact`, `formulaire`, `temoignages` et `faq` sont disponibles telles
+quelles. Rien à copier pour les utiliser.
 
 | Vous voulez | Vous faites |
 |---|---|
@@ -57,8 +57,10 @@ git log --oneline socle/main -- templates/
 
 Pour du CSS, la question ne se pose pas : `client.css` s'ajoute, il ne remplace rien.
 
-Seule exception : `cockpit/models/pages.model.php`, qui décrit le modèle éditorial du site. Il
-se modifie sur place — c'est le seul fichier partagé, et les conflits y sont rares et lisibles.
+Un type de section n'a plus à faire exception : ses champs se déclarent dans
+`cockpit/sections-client/`, que le socle ne touche jamais. `cockpit/models/pages.model.php`
+reste modifiable sur place pour le reste du modèle éditorial, et c'est alors le seul fichier
+partagé.
 
 ## Récupérer une correction du socle
 
@@ -99,6 +101,8 @@ Livré avec le socle — **ne pas modifier** :
 | `templates/blocs/*.html.twig` | un fichier = un type de section |
 | `templates/partials/image.html.twig` | rendu d'une image — passage obligé |
 | `templates/partials/pied.html.twig` | pied de page |
+| `cockpit/sections/*.section.php` | les champs des types de section livrés |
+| `cockpit/lib/Registry.php` | assemble le modèle des pages depuis ces fichiers |
 | `public/assets/css/site.css` | base : structure, typographie, accessibilité |
 
 Propre à ce site — **c'est là que vous écrivez** :
@@ -108,13 +112,14 @@ Propre à ce site — **c'est là que vous écrivez** :
 | `templates-client/blocs/*.html.twig` | vos types de section |
 | `templates-client/…` | vos remplacements de gabarits livrés |
 | `public/assets/css/client.css` | vos styles |
-| `cockpit/models/pages.model.php` | champs des sections — seul fichier partagé |
+| `cockpit/sections-client/*.section.php` | les champs de vos types de section |
+| `cockpit/models/pages.model.php` | le reste du modèle éditorial — seul fichier partagé |
 
 ## Démarche
 
 1. Découper la maquette en sections réutilisables.
-2. Pour chaque section : un fichier dans `templates-client/blocs/`, ses champs dans
-   `cockpit/models/pages.model.php`, ses styles dans `client.css`.
+2. Pour chaque section : un gabarit dans `templates-client/blocs/`, ses champs dans
+   `cockpit/sections-client/`, ses styles dans `client.css`.
 3. `php bin/install-cockpit.php --force`
 4. Composer les pages dans l'administration.
 5. `composer test` et `php bin/verifier-accessibilite.php`
@@ -142,11 +147,90 @@ Le bloc `formulaire` reçoit en plus `slug`, `accueilSlug`, `contactActif`, `jet
 
 ### 2. Les champs
 
-Dans `cockpit/models/pages.model.php` :
+Deux écritures fonctionnent. **Pour un type nouveau, prendre la première.**
+
+#### Un fichier de section
+
+`cockpit/sections-client/mon-type.section.php`. Le nom du fichier est le type, et il est le
+même que celui du gabarit.
+
+```php
+<?php
+
+return [
+    'type' => 'mon-type',
+    'label' => 'Ce que le client lit dans la liste',
+
+    // Les champs communs du tronc que ce type réutilise : « texte », « image ».
+    'communs' => ['texte'],
+
+    // La condition n'est pas écrite ici, elle est posée à l'installation.
+    'champs' => [
+        [
+            'name' => 'accroche',
+            'type' => 'text',
+            'label' => 'Accroche',
+            'width' => '1-1',
+        ],
+    ],
+];
+```
+
+`cockpit/models/pages.model.php` n'est pas touché. C'est tout l'intérêt : ce fichier appartient
+au socle, et chaque version qui le modifie produit un conflit sur les sites qui l'ont modifié
+de leur côté.
+
+L'installation refuse, en nommant le fichier : un type sans gabarit, un fichier dont le nom ne
+correspond pas au type, un champ portant déjà une `condition`, un champ commun qui n'existe
+pas, et un type déclaré deux fois.
+
+#### Dans `pages.model.php`, comme avant
+
+Toujours valable, et c'est ainsi que sont déclarés les types livrés avec le socle.
 
 - ajouter le type dans les `options` du champ `type` ;
 - déclarer les champs propres au type, chacun avec
-  `'condition' => "data.type === 'mon-type'"`.
+  `'condition' => "data.type === 'mon-type'"` ;
+- ajouter le type aux listes partagées, `$hasImage` et `$hasTexte`, selon les champs communs
+  réutilisés.
+
+**À réserver aux types déjà en place.** Un type écrit ici devra être repris à chaque conflit de
+fusion, et cette écriture sera dépréciée dans une version à venir.
+
+#### Les deux dans le même site
+
+Un site n'a rien à reprendre pour monter de version : ses types restent où ils sont et
+continuent de fonctionner. Les nouveaux se déclarent par fichier. Le client ne voit aucune
+différence entre les deux.
+
+Déclarer **le même type dans `pages.model.php` et dans `cockpit/sections-client/`** arrête
+l'installation, en nommant les deux endroits plutôt que l'un l'emporte en silence. Les deux
+appartiennent au site : à lui de choisir lequel garder.
+
+#### Si le socle livre un type que vous aviez déjà
+
+Le cas se présente quand une version ajoute à `cockpit/sections/` un type que vous aviez écrit
+vous-même dans `pages.model.php`, sous le même nom.
+
+**Votre déclaration l'emporte, et l'installation ne s'arrête pas.** Elle le dit :
+
+```
+  Le type « faq » reste celui de pages.model.php.
+  Le socle en livre un sous le même nom, laissé de côté : cockpit/sections/faq.section.php.
+```
+
+Vos champs, votre gabarit et le contenu déjà saisi par le client restent en place. Rien à faire,
+le message se répétera à chaque installation.
+
+Pour prendre la version du socle à la place, quand vous le décidez :
+
+1. relever les champs que le client a remplis, le contenu n'est pas repris automatiquement si
+   les noms de champs diffèrent ;
+2. retirer de `pages.model.php` l'option du type et ses champs propres, et ôter le type des
+   listes partagées `$hasImage` et `$hasTexte` ;
+3. supprimer votre gabarit de `templates-client/blocs/` si vous voulez celui du socle, ou le
+   garder : une copie de même nom l'emporte toujours ;
+4. `php bin/install-cockpit.php --force`, puis vérifier le rendu des pages concernées.
 
 Types de champ disponibles : `text`, `wysiwyg`, `boolean`, `select`, `color`, `date`,
 `datetime`, `number`, `asset`, `set`, `table`, `tags`, `contentItemLink`.
@@ -191,8 +275,12 @@ refusée de même : ses champs ne s’afficheraient jamais.
 php bin/install-cockpit.php --force
 ```
 
-Réécrit les modèles depuis `cockpit/models/`. Toute modification faite directement dans
+Réécrit les modèles depuis `cockpit/models/`, et assemble celui des pages à partir des fichiers
+de `cockpit/sections/` et `cockpit/sections-client/`. Toute modification faite directement dans
 l'administration est perdue — le dépôt fait foi.
+
+La commande annonce le nombre de types assemblés. S'il ne correspond pas aux fichiers déposés,
+c'est qu'un fichier a été refusé : le message le nomme.
 
 ## Règles
 

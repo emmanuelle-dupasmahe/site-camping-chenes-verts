@@ -95,7 +95,7 @@ dossier ne dépend de `Controller`.
 
 | Besoin | Fichier à ouvrir |
 |---|---|
-| Ajouter un type de section | `templates-client/blocs/` sur un site, `templates/blocs/` dans le socle, puis `cockpit/models/pages.model.php` — voir [guide-integration.md](guide-integration.md) |
+| Ajouter un type de section | un gabarit dans `templates-client/blocs/` sur un site, `templates/blocs/` dans le socle, et ses champs dans `cockpit/sections-client/` ou `cockpit/sections/` — voir [guide-integration.md](guide-integration.md) |
 | Changer l'apparence | `templates-client/`, `public/assets/css/client.css` |
 | Ajouter une adresse | `src/Http/Route.php`, puis un `Action` dans `src/Controller/` |
 | Changer ce que reçoivent **tous** les gabarits | `src/View/ViewContext.php` |
@@ -168,6 +168,21 @@ fait pas grossir.
 `templates-client/` d'abord, `templates/` ensuite. Un gabarit du socle est **remplacé** sans
 être modifié, donc une mise à jour du socle se récupère par `git merge` sans conflit sur la
 maquette. Même principe pour `client.css`, chargé après `site.css`.
+
+### Les types de section sont assemblés depuis deux dossiers
+
+`cockpit/sections/` pour le socle, `cockpit/sections-client/` pour le site. `Registry` les
+découvre, écrit la condition de chaque champ depuis le nom du type, étend les listes partagées,
+et `bin/install-cockpit.php` installe le modèle obtenu.
+
+Un type se déclarait auparavant à quatre endroits de `cockpit/models/pages.model.php`, un
+fichier du socle : tout site qui en ajoutait un entrait en conflit à chaque mise à jour. Même
+raison que pour les gabarits, même remède.
+
+Les deux écritures restent valables, et c'est ce qui permet à un site de monter de version sans
+reprendre ses types existants. Quand un type est déclaré des deux côtés, celui du site
+l'emporte si l'autre vient du socle, et l'installation s'arrête s'ils appartiennent tous deux au
+site.
 
 ### Le cache est purgé en totalité
 

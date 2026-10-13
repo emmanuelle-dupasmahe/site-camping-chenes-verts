@@ -1,8 +1,9 @@
 Les sections propres à ce site vont ici.
 
-Un fichier « galerie.html.twig » déposé dans ce dossier crée le type de section
-« galerie ». Rien d'autre à déclarer côté gabarits ; les champs se déclarent
-dans cockpit/models/pages.model.php, puis « php bin/install-cockpit.php --force ».
+Un fichier « galerie.html.twig » déposé dans ce dossier affiche le type de
+section « galerie ». Ses champs se déclarent dans
+cockpit/sections-client/galerie.section.php, puis
+« php bin/install-cockpit.php --force ».
 
 Modèle à recopier : templates/blocs/temoignages.html.twig, commenté.
 

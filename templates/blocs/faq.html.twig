@@ -1,0 +1,24 @@
+{% set sousNiveau = titre ? niveau + 1 : 2 %}
+<section class="bloc bloc-faq">
+	{% if titre %}
+		<h{{ niveau }}>{{ titre }}</h{{ niveau }}>
+	{% endif %}
+	{% if bloc.introduction %}
+		<p class="bloc-faq__introduction">{{ bloc.introduction }}</p>
+	{% endif %}
+	{% if bloc.questions is not empty %}
+		<div class="faq">
+			{% for item in bloc.questions %}
+				<details class="faq__item"{{ loop.first ? ' open' : '' }}>
+					<summary class="faq__question">
+						<h{{ sousNiveau }} class="faq__titre">{{ item.question
+}}</h{{ sousNiveau }}>
+					</summary>
+					{% if item.reponse %}
+						<div class="faq__reponse">{{ item.reponse|nl2br }}</div>
+					{% endif %}
+				</details>
+			{% endfor %}
+		</div>
+	{% endif %}
+</section>

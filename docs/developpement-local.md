@@ -55,7 +55,8 @@ php bin/cockpit-init.php
 
 ## Modifier le modèle de contenu
 
-1. Éditer `cockpit/models/settings.model.php` ou `pages.model.php`.
+1. Éditer `cockpit/models/settings.model.php`, `pages.model.php`, ou un fichier de
+   `cockpit/sections-client/`.
 2. `php bin/install-cockpit.php --force` — les fichiers sont recopiés dans l'installation.
 3. Recharger l'administration.
 

@@ -83,4 +83,42 @@ final class MajSocleTest extends TestCase
 
         $this->assertStringNotContainsString('git checkout main', $source);
     }
+
+    #[Test]
+    public function la_procedure_ecrite_nomme_la_branche_comme_la_commande(): void
+    {
+        $source = (string) file_get_contents(dirname(__DIR__, 2).'/bin/maj-socle.php');
+        $procedure = (string) file_get_contents(dirname(__DIR__, 2).'/docs/mise-a-jour-socle.md');
+
+        $this->assertStringContainsString('"maj-socle-{$visee}"', $source);
+        $this->assertStringContainsString(
+            'git checkout -b maj-socle-X.Y.Z',
+            $procedure,
+            'une branche au nom fixe est déjà prise à la deuxième mise à jour',
+        );
+    }
+
+    #[Test]
+    public function la_procedure_ecrite_ne_donne_aucun_numero_de_version_a_recopier(): void
+    {
+        $procedure = (string) file_get_contents(dirname(__DIR__, 2).'/docs/mise-a-jour-socle.md');
+
+        // Seules les lignes de commande comptent : le corps du texte cite des
+        // numéros réels pour expliquer le tri des étiquettes.
+        $commandes = array_filter(
+            preg_split('/\R/', $procedure) ?: [],
+            static fn (string $ligne): bool => preg_match(
+                '/^(git (merge|checkout|push)|php bin\/maj-socle\.php)\b/',
+                trim($ligne),
+            ) === 1,
+        );
+
+        foreach ($commandes as $ligne) {
+            $this->assertDoesNotMatchRegularExpression(
+                '/(?:merge v|maj-socle-|--vers=)\d+\.\d+\.\d+/',
+                $ligne,
+                "« {$ligne} » se recopie telle quelle : un numéro figé y sera pris pour la version visée",
+            );
+        }
+    }
 }

@@ -22,7 +22,8 @@
             "Tests\\": "tests/",
             "PasswordPolicy\\": "cockpit/addons/PasswordPolicy/",
             "EditorGuards\\": "cockpit/addons/EditorGuards/",
-            "Media\\": "cockpit/addons/Media/"
+            "Media\\": "cockpit/addons/Media/",
+            "Sections\\": "cockpit/lib/"
         }
     },
     "config": {

@@ -50,7 +50,7 @@ Ports, dépannage et réinitialisation : [docs/developpement-local.md](docs/deve
 
 ```
 bin/               scripts d'installation et d'initialisation
-cockpit/           configuration Cockpit et modèle de contenu (versionnés)
+cockpit/           configuration Cockpit, modèle de contenu et types de section (versionnés)
 docs/              documentation technique
 public/            racine web : point d'entrée, ressources, médias, administration installée
 src/               code du site public
@@ -64,9 +64,10 @@ Le trajet d'une requête, le rôle de chaque dossier de `src/` et les décisions
 cette structure sont décrits dans [docs/architecture.md](docs/architecture.md).
 
 **Socle et personnalisation sont séparés.** Un gabarit placé dans `templates-client/` remplace
-celui de `templates/` sans le modifier, et `client.css` est chargé après `site.css`. Une
-correction du socle se récupère alors par fusion sans conflit sur la maquette — voir
-[docs/guide-integration.md](docs/guide-integration.md).
+celui de `templates/` sans le modifier, un type de section déclaré dans
+`cockpit/sections-client/` s'ajoute à ceux de `cockpit/sections/`, et `client.css` est chargé
+après `site.css`. Une correction du socle se récupère alors par fusion sans conflit sur la
+maquette — voir [docs/guide-integration.md](docs/guide-integration.md).
 
 Cockpit n'est **pas versionné** : `bin/install-cockpit.php` télécharge l'archive officielle
 d'une version épinglée et en vérifie l'empreinte SHA-256. La configuration et le modèle de
@@ -88,8 +89,12 @@ La structure est **figée** : le client remplit le contenu, il ne crée ni colle
 La publication n'est pas un champ : Cockpit la gère nativement sur chaque élément
 (« Publié » / « Non publié » / « Archivé »). Le site public ne sert que les éléments publiés.
 
-Pour modifier la structure, éditer `cockpit/models/*.model.php` puis relancer
-`php bin/install-cockpit.php --force`.
+Les **types de section** d'une page se déclarent chacun dans un fichier :
+`cockpit/sections/` pour ceux que livre le socle, `cockpit/sections-client/` pour ceux propres à
+un site. Le modèle des pages est assemblé à partir de ces fichiers à l'installation.
+
+Pour modifier la structure, éditer `cockpit/models/*.model.php` ou un fichier de section, puis
+relancer `php bin/install-cockpit.php --force`.
 
 ## Adresses du site
 

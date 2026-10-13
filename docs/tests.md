@@ -9,7 +9,7 @@ de vérification lit le site réellement servi.
 composer test
 ```
 
-255 tests couvrent les garde-fous du produit : ce qui décide de ce qu'un visiteur reçoit, et ce
+La suite couvre les garde-fous du produit : ce qui décide de ce qu'un visiteur reçoit, et ce
 qui empêche le site d'être cassé depuis l'administration.
 
 | Ce qui est protégé | Exemples |
@@ -32,6 +32,8 @@ qui empêche le site d'être cassé depuis l'administration.
 | Passerelle | la pastille ne s'affiche que sur une session confirmée, et l'adresse de l'administration ne figure dans aucun fichier public |
 | Version | `VERSION` suit la première entrée du journal, et porte un numéro de la forme X.Y.Z |
 | Mise à jour d'un site | la commande refuse un arbre de travail non propre, une version inconnue, une version plus ancienne que celle du site, une version majeure |
+| Caches | Twig relit ses gabarits en production, la purge vide les gabarits compilés, l'installation retire les modèles analysés par Cockpit |
+| Registre des sections | un fichier de section mal formé est refusé en étant nommé, un type déclaré deux fois est refusé, un type que le site avait déjà n'est pas remplacé par celui du socle |
 
 Les tests ne touchent pas au réseau et ne démarrent pas Cockpit : ils s'exécutent en moins
 d'une seconde. Un seul lit les fichiers de l'administration installée, pour confronter les

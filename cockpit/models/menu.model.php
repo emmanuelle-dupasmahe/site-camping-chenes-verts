@@ -26,7 +26,6 @@ return [
             'label' => 'Entrées du menu',
             'info' => 'Apparaissent en haut de toutes les pages, dans cet ordre.',
             'required' => false,
-            'localize' => false,
             'multiple' => true,
             'group' => null,
             'width' => '1-1',

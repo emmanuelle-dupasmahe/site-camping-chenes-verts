@@ -94,6 +94,11 @@ $twig = new Environment(new FilesystemLoader($templateDirs), [
     // Compiled templates live outside the web root, next to the rest of /var.
     'cache' => $env === 'prod' ? "{$root}/var/cache/twig" : false,
     'debug' => $env !== 'prod',
+    // Left out, this follows 'debug' and is false in production: Twig would
+    // never look at the source again, and a template sent to a host would
+    // stay invisible. The cost is one stat per template per request, and
+    // cached pages are served without starting PHP at all.
+    'auto_reload' => true,
     'strict_variables' => false,
     'autoescape' => 'html',
 ]);

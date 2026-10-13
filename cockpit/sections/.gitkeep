@@ -1,0 +1,5 @@
+Les types de section livrés par le socle vont ici.
+
+Ce dossier appartient au socle : une mise à jour peut y ajouter, modifier ou
+retirer des fichiers. Les types propres à un site vont dans
+cockpit/sections-client/, que le socle ne touche jamais.

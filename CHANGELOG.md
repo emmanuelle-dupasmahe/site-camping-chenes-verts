@@ -12,6 +12,121 @@ qu'il prend pour un socle recopié chez chaque client :
 La version installée est inscrite dans le fichier `VERSION`, à la racine. La procédure de
 fusion est dans [docs/mise-a-jour-socle.md](docs/mise-a-jour-socle.md).
 
+## 2.2.1 — 2026-10-12
+
+Les six modèles de contenu déclaraient `'localize' => false` sur 42 champs. Cockpit ne lit pas
+cette clé : celle qu'il lit pour un champ traduisible est `i18n`.
+
+**`cockpit/models/*.model.php`** n'en portent plus. Le comportement ne change pas, la valeur
+était `false` partout et le produit est en français seul. La clé laissait croire qu'un réglage
+de traduction était en place, et se recopiait dans chaque nouveau champ écrit sur le modèle d'un
+existant.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
+## 2.2.0 — 2026-10-12
+
+Un type de section se déclarait à quatre endroits de `cockpit/models/pages.model.php` : une
+variable de condition, une option du champ `type`, les listes partagées des champs communs, et
+ses propres champs. Ce fichier appartient au socle : tout site qui ajoutait un type entrait en
+conflit à chaque mise à jour.
+
+**Un type peut désormais se déclarer dans son propre fichier**, `cockpit/sections-client/` pour
+un site, `cockpit/sections/` pour le socle. `cockpit/models/pages.model.php` n'est plus touché.
+
+**`cockpit/lib/Registry.php`** découvre ces fichiers, les valide, écrit la condition de chaque
+champ depuis le nom du type, et étend les listes partagées demandées par `communs`.
+`bin/install-cockpit.php` installe le modèle assemblé.
+
+**Les deux écritures cohabitent.** Un site monte de version sans reprendre aucun de ses types
+existants, et déclare les nouveaux par fichier. Le client ne voit aucune différence. Le seul cas
+refusé est un même type déclaré des deux côtés : l'installation s'arrête en nommant les deux
+endroits.
+
+L'écriture dans `pages.model.php` sera dépréciée dans une version à venir. Pour un type nouveau,
+prendre le fichier de section.
+
+**Les refus**, chacun nommant le fichier en cause : un type sans gabarit, un fichier dont le nom
+ne correspond pas au type déclaré, un champ portant déjà une `condition`, un champ commun
+inexistant, un type déclaré deux fois.
+
+**Un type de section « Questions fréquentes » est livré**, le premier écrit au nouveau format.
+Les questions sont des `details` : elles s'ouvrent sans JavaScript et leur contenu est dans le
+HTML de la première réponse. Ses styles sont dans `site.css`, ses classes sont stables.
+
+Rien à faire sur un site existant au-delà de la fusion, y compris s'il a déjà son propre type
+« faq » : dans ce cas **la déclaration du site l'emporte**, celle du socle est laissée de côté,
+et l'installation le dit sans s'arrêter. Le contenu saisi par le client n'est pas touché.
+`docs/guide-integration.md` décrit comment prendre la version du socle à la place, le jour où on
+le décide.
+
+## 2.1.5 — 2026-10-11
+
+La mise en ligne laissait trois choses à deviner, dont une a bloqué un site en service le
+9 octobre 2026.
+
+**`docs/mise-a-jour-socle.md`**, étape 6, dit que le modèle de contenu existe en deux
+exemplaires et lequel fait foi. Modifier la copie installée de `public/admin/` puis lancer
+l'installation annulait la modification, sans message.
+
+**Le besoin de réseau de `install-cockpit.php --force`** est écrit : la commande télécharge
+l'archive de Cockpit avant toute copie, et s'arrête sans rien faire sur un hébergement sans
+accès sortant. Le contournement est donné, envoyer aussi `var/tmp/install/`, que `git pull`
+n'apporte pas puisque `var/` n'est pas versionné.
+
+**La mise en ligne sans ligne de commande** gagne le tableau de ce qu'il reste à purger à la
+main, selon ce qui a changé : le cache de pages par un enregistrement dans l'administration,
+`var/data/app.memory.sqlite` quand un modèle a changé, et `var/cache/twig` quand le transfert a
+conservé les dates d'origine des fichiers.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
+## 2.1.4 — 2026-10-11
+
+La procédure de mise à jour écrite à la main était exacte une fois, puis fausse. Trois écarts
+relevés sur une montée de version réelle le 8 octobre 2026.
+
+**`docs/mise-a-jour-socle.md`**, étape 2, traite le refus
+`would clobber existing tag` : il ne porte que sur l'étiquette nommée, les autres sont bien
+arrivées, et `git fetch` sort malgré tout en erreur. Un tableau dit quoi faire selon ce que
+l'étiquette locale désigne. La règle qui évite le cas est énoncée : le préfixe `v` appartient au
+socle, une étiquette propre à un site ne commence jamais par `v`.
+
+**Étape 3**, la branche porte désormais la version visée, `maj-socle-X.Y.Z`, le nom que pose
+déjà `bin/maj-socle.php`. Le nom fixe précédent était pris dès la deuxième mise à jour, et le
+document ne disait pas quoi faire du refus. Le cas est décrit.
+
+**Les numéros de version des exemples** sont remplacés par `X.Y.Z`. Recopiés tels quels, ils
+faisaient fusionner une version qui n'était ni celle du site ni celle visée.
+
+Deux garde-fous ajoutés : la branche documentée est celle que construit la commande, et aucune
+ligne de commande du document ne porte de numéro de version à recopier.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
+## 2.1.3 — 2026-10-11
+
+Deux caches pouvaient servir un contenu périmé sans jamais le signaler. Un travail juste,
+monté sur un hébergement, restait sans effet et sans message.
+
+**`public/index.php`** renseigne `auto_reload` pour Twig. Sans lui, l'option suivait `debug`,
+donc fausse en production : les gabarits compilés dans `var/cache/twig` étaient servis
+indéfiniment, sans que la date du gabarit source soit jamais comparée.
+
+**`bin/purge-cache.php`** vide aussi `var/cache/twig`, par la nouvelle classe
+`App\Cache\TemplateCache`. Aucune commande du socle ne le faisait. La mise à jour d'un site en
+bénéficie sans changement, puisqu'elle appelle déjà cette purge.
+
+**`bin/install-cockpit.php`** retire `var/data/app.memory.sqlite`, où Cockpit garde les modèles
+de contenu analysés. Le cache des modules était purgé, celui des modèles non : un type de
+section ajouté était copié au bon endroit sans que l'administration le montre. Constaté sur un
+site en service le 9 octobre 2026.
+
+**`docs/tests.md`** n'annonce plus le nombre de tests. Il avait déjà divergé une fois et rien ne
+le reliait à la suite. Une ligne est ajoutée au tableau des garde-fous pour les trois caches.
+
+Rien à faire sur un site existant au-delà de la fusion.
+
 ## 2.1.2 — 2026-10-06
 
 Documentation seule. `docs/tests.md` annonçait 250 tests alors que la suite en exécute 255 : les

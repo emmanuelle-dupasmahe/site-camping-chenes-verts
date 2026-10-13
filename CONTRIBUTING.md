@@ -8,6 +8,10 @@ sites en service : les règles qui suivent existent pour ça, pas pour la forme.
 **Ouvrez une issue.** Même pour une correction évidente. Elle sert à vérifier que le défaut est
 bien là où on le croit, et elle devient la trace que quelqu'un relira dans six mois.
 
+**Sauf pour une faille de sécurité**, qui ne passe jamais par une issue publique : une issue la
+publie avant qu'un correctif existe, et chaque site installé reste exposé pendant ce temps. La
+marche à suivre est dans [SECURITY.md](SECURITY.md).
+
 Pour un défaut, l'issue doit permettre de le reproduire depuis une installation neuve. Un
 défaut qu'on ne sait pas reproduire ne peut être ni constaté avant correction, ni vérifié
 après.

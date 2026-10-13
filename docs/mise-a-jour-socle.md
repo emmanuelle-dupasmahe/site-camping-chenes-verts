@@ -14,9 +14,11 @@ après, à l'étape 6.
 ### La commande
 
 ```bash
-php bin/maj-socle.php                 # où en est le site, et ce qui existe
-php bin/maj-socle.php --vers=2.0.13   # fusionne et enchaîne les commandes qui suivent
+php bin/maj-socle.php                  # où en est le site, et ce qui existe
+php bin/maj-socle.php --vers=X.Y.Z     # fusionne et enchaîne les commandes qui suivent
 ```
+
+`X.Y.Z` est à remplacer par le numéro visé, sans le `v` : la première commande les liste.
 
 Elle déroule les étapes 1 à 5 décrites plus bas : branche dédiée, fusion de l'étiquette, puis
 `composer install`, `install-cockpit.php --force`, `purge-cache.php` et les tests.
@@ -56,6 +58,36 @@ git tag -l 'v*' --sort=v:refname
 `git tag -l` sans motif listerait aussi les étiquettes propres au site ; `'v*'` ne garde que
 celles du socle.
 
+> **Le préfixe `v` appartient au socle.** Une étiquette posée par le site ne commence jamais
+> par `v`. C'est ce qui permet au filtre ci-dessus de fonctionner, et ce qui évite le refus
+> décrit juste en dessous.
+
+#### Si le `fetch` affiche « would clobber existing tag »
+
+```
+ ! [rejected]  v2.0.6 -> v2.0.6  (would clobber existing tag)
+```
+
+Le site porte déjà une étiquette de ce nom, qui désigne autre chose. Git refuse de la déplacer,
+et c'est une protection.
+
+**Le refus ne porte que sur cette étiquette.** Toutes les autres sont arrivées. `git fetch`
+sort malgré tout en erreur, ce qui donne à la commande entière l'apparence d'un échec : ce n'en
+est pas un, et la version visée est le plus souvent déjà là.
+
+Regarder ce que l'étiquette locale désigne avant de décider :
+
+```bash
+git show --no-patch --format='%H %ci %s' v2.0.6
+```
+
+| Ce que c'est | Ce qu'il faut faire |
+|---|---|
+| Une étiquette propre au site, qui porte mal son nom | la renommer sans le préfixe `v` : `git tag nouveau-nom v2.0.6` puis `git tag -d v2.0.6` |
+| Une ancienne copie de l'étiquette du socle | la remplacer : `git fetch socle --tags --force` |
+
+Reprendre ensuite `git tag -l 'v*' --sort=v:refname`.
+
 `--sort=v:refname` n'est pas un détail : le tri par défaut est alphabétique, et il place
 `v2.0.10` entre `v2.0.1` et `v2.0.2`. La dernière version de la liste ne serait pas la plus
 récente.
@@ -82,17 +114,24 @@ git checkout main
 git pull
 ```
 
-Créer une branche dédiée à la mise à jour du socle :
+Créer une branche dédiée à la mise à jour du socle. **Son nom porte la version visée**, sinon
+la deuxième mise à jour butera sur la branche laissée par la première :
 
 ```bash
-git checkout -b maj-socle
+git checkout -b maj-socle-X.Y.Z
 ```
+
+C'est le nom que pose `bin/maj-socle.php`. Si git répond `a branch named … already exists`,
+cette mise à jour est déjà commencée : la reprendre avec `git checkout maj-socle-X.Y.Z`, ou la
+supprimer avec `git branch -d maj-socle-X.Y.Z` si elle a déjà été fusionnée.
 
 Fusionner ensuite la nouvelle version du socle :
 
 ```bash
-git merge v2.0.8 --allow-unrelated-histories
+git merge vX.Y.Z --allow-unrelated-histories
 ```
+
+`X.Y.Z` est partout le numéro choisi à l'étape 2. Ces lignes ne se recopient pas telles quelles.
 
 L’option `--allow-unrelated-histories` permet d’autoriser la fusion lorsque les deux historiques Git n’ont pas d’ancêtre commun.
 
@@ -145,13 +184,25 @@ elle est absente.
 Ouvrir enfin une page du site et `/admin`, puis pousser pour relecture :
 
 ```bash
-git push -u origin maj-socle
+git push -u origin maj-socle-X.Y.Z
 ```
 
 ### 6. Mettre à jour le site en ligne
 
 Les étapes précédentes n'ont touché que le dépôt. Une fois la branche fusionnée dans `main`,
 reporter le socle sur l'hébergement. Deux cas, selon ce que l'hébergeur permet.
+
+#### Le modèle de contenu existe en deux exemplaires
+
+Un seul se modifie :
+
+| Fichier | Ce que c'est |
+|---|---|
+| `cockpit/models/pages.model.php` | **la source**, versionnée, celle qu'on modifie |
+| `public/admin/storage/content/pages.model.php` | la copie installée, réécrite à chaque `install-cockpit.php` |
+
+Modifier la copie puis lancer l'installation annule la modification, sans message. Le dépôt fait
+foi.
 
 #### Avec un accès SSH et un dépôt git sur le serveur
 
@@ -185,22 +236,48 @@ Ce n'est donc pas une autre opération, c'est la même avec un garde-fou. Le ré
 passage le comportement de `git pull`, qui dépend sinon de la version de git et de la
 configuration de la machine.
 
+> **`install-cockpit.php --force` a besoin du réseau avant de copier quoi que ce soit.** Il
+> réinstalle le cœur de Cockpit depuis une archive officielle, qu'il télécharge si elle est
+> absente du serveur ou si son empreinte ne correspond pas. Sur un hébergement sans accès
+> sortant, la commande s'arrête **avant** d'avoir rien copié.
+>
+> Le contournement tient en une ligne : envoyer aussi le dossier `var/tmp/install/` du poste de
+> développement, où l'archive est déjà présente et vérifiée. `var/` n'étant pas versionné, elle
+> n'arrive pas avec `git pull`.
+
 #### Par envoi de fichiers
 
-Voir [installation-mutualise.md](installation-mutualise.md). Après l'envoi, relancer les deux
-commandes ci-dessus si la ligne de commande existe.
+Voir [installation-mutualise.md](installation-mutualise.md), qui décrit aussi les droits
+d'écriture à ouvrir. Après l'envoi, relancer les deux commandes ci-dessus si la ligne de
+commande existe.
 
-Sans ligne de commande, enregistrer n'importe quel contenu depuis l'administration vide le
-cache ; les fichiers de `public/admin/` doivent alors être préparés en local puis envoyés,
-puisque `install-cockpit.php` ne peut pas tourner sur place.
+Sans ligne de commande, `install-cockpit.php` ne peut pas tourner sur place : les fichiers de
+`public/admin/` doivent être préparés en local puis envoyés. Il reste alors deux choses à faire
+à la main, que rien ne signale si on les oublie.
+
+| Ce qui a changé | Ce qu'il faut faire |
+|---|---|
+| N'importe quoi | enregistrer un contenu depuis l'administration : cela vide le cache de pages |
+| Un gabarit de `templates/` ou `templates-client/` | rien de plus, **si le transfert a daté les fichiers du jour**. Twig recompile un gabarit dont la date a changé. Un client de transfert réglé pour conserver les dates d'origine le laisse passer pour inchangé : supprimer alors le contenu de `var/cache/twig` |
+| Un modèle de `cockpit/models/` | supprimer en plus `var/data/app.memory.sqlite`, où Cockpit garde les modèles analysés |
+
+Le dernier point est celui qui coûte : sans cette suppression, le modèle est bien en place sur
+l'hébergement et l'administration continue d'afficher les champs d'avant, sans erreur. Cockpit
+reconstruit le fichier à la requête suivante.
 
 ## Ce qui entre en conflit
 
 | Fichiers | À la fusion |
 |---|---|
-| `templates-client/` | jamais — le socle n'y écrit pas |
+| `templates-client/`, `cockpit/sections-client/` | jamais — le socle n'y écrit pas |
+| `public/assets/css/client.css` | jamais — il est fait pour être écrit par le site |
 | `.env`, `var/`, `public/medias/`, `public/admin/` | jamais — non versionnés (sauf `public/medias/.htaccess`) |
-| `templates/`, `src/`, `public/assets/` | conflit s'ils ont été modifiés dans le site |
+| `templates/`, `src/`, `bin/`, `cockpit/sections/`, `cockpit/lib/`, le reste de `public/assets/` | conflit s'ils ont été modifiés dans le site |
+| `cockpit/models/pages.model.php` | conflit si le site y a déclaré des types de section |
+
+Le dernier cas est le plus courant, et il se supprime en déclarant le type dans
+`cockpit/sections-client/` plutôt que dans le modèle. Voir
+[guide-integration.md](guide-integration.md).
 
 Placer toute personnalisation dans `templates-client/` — voir
 [guide-integration.md](guide-integration.md).
@@ -249,8 +326,8 @@ Un dépôt créé depuis un template démarre sur un historique neuf, sans ancê
 socle. La première fusion demande donc une option que les suivantes n'auront pas :
 
 ```bash
-git checkout -b maj-socle
-git merge v2.0.4 --allow-unrelated-histories
+git checkout -b maj-socle-X.Y.Z
+git merge vX.Y.Z --allow-unrelated-histories
 ```
 
 Les fichiers identiques des deux côtés fusionnent sans intervention, et ceux que le socle a

@@ -1,0 +1,12 @@
+Les types de section propres à ce site vont ici.
+
+Un fichier « galerie.section.php » déclare le type de section « galerie » :
+son libellé, ses champs, et les champs communs qu'il réutilise. Le gabarit qui
+l'affiche porte le même nom, dans templates-client/blocs/galerie.html.twig.
+
+Aucune modification de cockpit/models/pages.model.php n'est nécessaire : c'est
+ce qui évite un conflit à chaque mise à jour du socle.
+
+Appliquer avec « php bin/install-cockpit.php --force ».
+
+Marche à suivre complète : docs/guide-integration.md

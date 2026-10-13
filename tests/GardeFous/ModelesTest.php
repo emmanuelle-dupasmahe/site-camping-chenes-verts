@@ -38,7 +38,12 @@ final class ModelesTest extends TestCase
         };
 
         foreach (glob(dirname(__DIR__, 2).'/cockpit/models/*.model.php') ?: [] as $fichier) {
-            $modele = include $fichier;
+            // Les types de section peuvent vivre dans leurs propres fichiers :
+            // c'est le modèle assemblé que Cockpit reçoit, donc celui qu'il
+            // faut contrôler.
+            $modele = basename($fichier) === 'pages.model.php'
+                ? \Sections\Registry::pagesModel(dirname(__DIR__, 2))
+                : include $fichier;
 
             if (is_array($modele['fields'] ?? null)) {
                 $parcourir($modele['fields'], basename($fichier, '.model.php'));
